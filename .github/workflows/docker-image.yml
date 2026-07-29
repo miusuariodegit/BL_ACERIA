@@ -1,0 +1,128 @@
+#Pipeline CI / CD
+name: Pipeline CI / CD
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sonarqube:
+    name: SonarQube Trigger
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Official SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  deploy:
+    name: CI
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
+
+    steps:
+    # paso 1: se hace checkout del código fuente del repositorio
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        queries: security-extended
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0' 
+
+    # paso 2: se ejecutan las pruebas unitarias y se construye la solución
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build solution
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Run bUnit Tests
+      run: dotnet test --no-build --verbosity normal
+
+    # Paso 3: Configura Credenciales AWS
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    # Paso 4: Login to Amazon ECR
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    # Paso 5: Build Docker Image locally
+    - name: Build Docker Image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+
+    # Paso 6: Escanear con Trivy para buscar vulnerabilidades en la imagen Docker
+    - name: Run Trivy Vulnerability Scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        severity: 'CRITICAL,HIGH'
+
+    - name: Update Kubeconfig
+      run: |
+        aws eks update-kubeconfig --name eks-aceria-east1 --region us-east-1
+
+    # Paso 7: Push to ECR only if both SonarQube and Trivy checks pass
+    - name: Push Image to Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        MACHIN: gpbaceria
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/$MACHIN:$IMAGE_TAG .
+        echo "se hizo el build $ECR_REGISTRY/$MACHIN:$IMAGE_TAG"
+        docker push $ECR_REGISTRY/$MACHIN:$IMAGE_TAG
+        echo "Image pushed to ECR: $ECR_REGISTRY/$MACHIN:$IMAGE_TAG"
+        kubectl apply -f k8s/deployment.yaml
+        echo "Se hizo el apply del deployment.yaml"
+        kubectl set image deployment.app/gpbaceria-app web-server=$ECR_REGISTRY/$MACHIN:$IMAGE_TAG
+        echo "Se actualiza la imagen a : $ECR_REGISTRY/$MACHIN:$IMAGE_TAG"
+        kubectl rollout restart deployment.app/gpbaceria-app
