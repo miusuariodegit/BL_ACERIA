@@ -3,7 +3,7 @@ name: Construye y despliega una version en especifico
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*' #para que se mande llamar debe iniciar con v
 
 
 jobs:
