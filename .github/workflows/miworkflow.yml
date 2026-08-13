@@ -118,10 +118,5 @@ jobs:
         echo "se hizo el build $ECR_REGISTRY/$MACHIN:$IMAGE_TAG"
         docker push $ECR_REGISTRY/$MACHIN:$IMAGE_TAG
         echo "Image pushed to ECR: $ECR_REGISTRY/$MACHIN:$IMAGE_TAG"
-        kubectl apply -f k8s/deployment.yaml
-        echo "Se hizo el apply del deployment.yaml"
-        kubectl set image deployment.app/gpbaceria-app web-server=$ECR_REGISTRY/$MACHIN:$IMAGE_TAG
-        echo "Se actualiza la imagen a : $ECR_REGISTRY/$MACHIN:$IMAGE_TAG"
-        kubectl rollout restart deployment.app/gpbaceria-app
 
 
