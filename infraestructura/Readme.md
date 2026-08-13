@@ -16,7 +16,9 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 Aqui ejecutar el deploy mediante git hub ejecutando los siguientes pasos:
 
 git add .
+
 git tag -a v1.0.14 -m “release versión 1.0.14”
+
 git push origin v1.0.14
 
 
