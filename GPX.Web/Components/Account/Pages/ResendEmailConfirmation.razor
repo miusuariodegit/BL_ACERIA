@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de Identity: reenvio de confirmacion de correo electronico.
+   ========================================================================================== *@
 @page "/Account/ResendEmailConfirmation"
 
 @using System.ComponentModel.DataAnnotations
@@ -46,6 +49,9 @@
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
 
+    /// <summary>
+    /// On Valid Submit (operacion asincrona).
+    /// </summary>
     private async Task OnValidSubmitAsync() {
         var user = await UserManager.FindByEmailAsync(Input.Email!);
         if(user is null) {

@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de Identity: registro de nuevo usuario.
+   ========================================================================================== *@
 @page "/Account/Register"
 
 @using System.ComponentModel.DataAnnotations
@@ -68,6 +71,9 @@
 
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
 
+    /// <summary>
+    /// Register User.
+    /// </summary>
     public async Task RegisterUser(EditContext editContext) {
         var user = CreateUser();
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -101,6 +107,9 @@
         RedirectManager.RedirectTo(ReturnUrl);
     }
 
+    /// <summary>
+    /// Create User.
+    /// </summary>
     private ApplicationUser CreateUser() {
         try {
             return Activator.CreateInstance<ApplicationUser>();
@@ -110,6 +119,9 @@
         }
     }
 
+    /// <summary>
+    /// Get Email Store.
+    /// </summary>
     private IUserEmailStore<ApplicationUser> GetEmailStore() {
         if(!UserManager.SupportsUserEmail) {
             throw new NotSupportedException("The default UI requires a user store with email support.");

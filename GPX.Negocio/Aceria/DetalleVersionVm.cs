@@ -1,9 +1,18 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
+// [GPX-DOC-v1] ================================================================================
+// Modelo de vista del detalle de una version de tundish: tipo de semielaborado, barras, longitud,
+// calidad, fecha/semana prevista y GAP.
+// ================================================================================================
+
 namespace GPX.Negocio.Aceria
 {
+    /// <summary>
+    /// Clase DetalleVersionVm. Modelo de vista del detalle de una version de tundish: tipo de
+    /// semielaborado, barras, longitud, calidad, fecha/semana prevista y GAP.
+    /// </summary>
     public  class DetalleVersionVm
     {
         public string IdDetalle { get; set; } = string.Empty;

@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de gestion de cuenta: perfil del usuario.
+   ========================================================================================== *@
 @page "/Account/Manage"
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
@@ -40,6 +43,9 @@
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
         username = await UserManager.GetUserNameAsync(user);
@@ -48,6 +54,9 @@
         Input.PhoneNumber ??= phoneNumber;
     }
 
+    /// <summary>
+    /// On Valid Submit (operacion asincrona).
+    /// </summary>
     private async Task OnValidSubmitAsync() {
         if(Input.PhoneNumber != phoneNumber) {
             var setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber);

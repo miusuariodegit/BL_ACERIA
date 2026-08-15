@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -7,12 +7,24 @@ using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 
+// [GPX-DOC-v1] ================================================================================
+// Servicio de acceso a datos (Dapper) para consultas de negocio de Aceria contra SQL Server: necesidad
+// de beam blank por tren de colada y tundish disponibles.
+// ================================================================================================
+
 namespace GPX.Negocio.Aceria
 {
+    /// <summary>
+    /// Clase AceriaService. Servicio de acceso a datos (Dapper) para consultas de negocio de Aceria contra
+    /// SQL Server: necesidad de beam blank por tren de colada y tundish disponibles.
+    /// </summary>
     public  class AceriaService
     {
         private readonly string cnn;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase AceriaService.
+        /// </summary>
         public AceriaService(IConfiguration configuration)
         {
             cnn = configuration.GetConnectionString("DefaultConnection")
@@ -25,6 +37,10 @@ namespace GPX.Negocio.Aceria
 
 
 
+        /// <summary>
+        /// Obtiene la necesidad virtual de beam blank para un tren de colada, ejecutando el stored procedure
+        /// sp_DameNecesidadVirtualBeamBlankTrenV2 filtrado por sociedad y codigo de maquina.
+        /// </summary>
         public async Task<List<BeamBlankNecesidad>> DameNecesidadBeamBlankTrenV2Async(string Sociedad, string CodMaquina)
         {
             try
@@ -51,6 +67,10 @@ namespace GPX.Negocio.Aceria
         }
 
 
+        /// <summary>
+        /// Consulta los tundish disponibles que cubren un numero de horas requeridas a partir de una fecha
+        /// inicial, para un tipo de semielaborado concreto.
+        /// </summary>
         public async Task<List<ListTundishDisponibles>> ConsultaTundishDisponiblesAsync(int horasRequeridas, DateTime fechaInicial, string TipoSemi)
         {
             try

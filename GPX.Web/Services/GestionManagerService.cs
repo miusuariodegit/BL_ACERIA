@@ -3,12 +3,24 @@ using GPX.Web.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
+// [GPX-DOC-v1] ================================================================================
+// Servicio central del modulo de administracion de usuarios, roles, perfiles y modulos: listados,
+// editores y persistencia.
+// ================================================================================================
+
 namespace GPX.Web.Services {
+    /// <summary>
+    /// Clase GestionManagerService. Servicio central del modulo de administracion de usuarios, roles,
+    /// perfiles y modulos: listados, editores y persistencia.
+    /// </summary>
     public class GestionManagerService {
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase GestionManagerService.
+        /// </summary>
         public GestionManagerService(
             ApplicationDbContext dbContext,
             UserManager<ApplicationUser> userManager,
@@ -18,6 +30,9 @@ namespace GPX.Web.Services {
             _roleManager = roleManager;
         }
 
+        /// <summary>
+        /// Obtiene el resumen de indicadores mostrado en el panel de administracion.
+        /// </summary>
         public async Task<GestionDashboardSummary> GetDashboardSummaryAsync() {
             var roleClaimsCount = await _dbContext.RoleClaims.CountAsync(claim => claim.ClaimType == AppClaimTypes.Permission);
             var userClaimsCount = await _dbContext.UserClaims.CountAsync(claim => claim.ClaimType == AppClaimTypes.Permission);
@@ -31,6 +46,9 @@ namespace GPX.Web.Services {
                 userClaimsCount);
         }
 
+        /// <summary>
+        /// Obtiene la lista de modulos disponibles como opciones de seleccion.
+        /// </summary>
         public async Task<IReadOnlyList<GestionModuleOption>> GetModuleOptionsAsync() =>
             await _dbContext.Modules
                 .AsNoTracking()
@@ -48,12 +66,18 @@ namespace GPX.Web.Services {
                     module.DisplayOrder))
                 .ToListAsync();
 
+        /// <summary>
+        /// Obtiene la lista de perfiles disponibles como opciones de seleccion.
+        /// </summary>
         public async Task<IReadOnlyList<AppProfile>> GetProfileOptionsAsync() =>
             await _dbContext.Profiles
                 .AsNoTracking()
                 .OrderBy(profile => profile.Name)
                 .ToListAsync();
 
+        /// <summary>
+        /// Obtiene el listado de usuarios registrados.
+        /// </summary>
         public async Task<IReadOnlyList<GestionUserListItem>> GetUsersAsync() {
             var users = await _dbContext.Users
                 .AsNoTracking()
@@ -78,6 +102,9 @@ namespace GPX.Web.Services {
                 .ToList();
         }
 
+        /// <summary>
+        /// Obtiene el listado de roles disponibles.
+        /// </summary>
         public async Task<IReadOnlyList<GestionRoleListItem>> GetRolesAsync() {
             var roles = await _dbContext.Roles
                 .AsNoTracking()
@@ -102,6 +129,9 @@ namespace GPX.Web.Services {
                 .ToList();
         }
 
+        /// <summary>
+        /// Obtiene los usuarios agrupados por rol.
+        /// </summary>
         public async Task<IReadOnlyList<GestionRoleUsersItem>> GetUsersByRoleAsync() {
             var roles = await _dbContext.Roles
                 .AsNoTracking()
@@ -135,6 +165,9 @@ namespace GPX.Web.Services {
                 .ToList();
         }
 
+        /// <summary>
+        /// Obtiene el listado de perfiles funcionales (AppProfile).
+        /// </summary>
         public async Task<IReadOnlyList<GestionProfileListItem>> GetProfilesAsync() {
             var profiles = await _dbContext.Profiles
                 .AsNoTracking()
@@ -159,6 +192,9 @@ namespace GPX.Web.Services {
                 .ToList();
         }
 
+        /// <summary>
+        /// Obtiene el resumen de claims de permisos sincronizados.
+        /// </summary>
         public async Task<GestionClaimsSummary> GetClaimsSummaryAsync() {
             var users = await GetUsersAsync();
             var roles = await GetRolesAsync();
@@ -178,6 +214,9 @@ namespace GPX.Web.Services {
                     role.Permissions)).ToList());
         }
 
+        /// <summary>
+        /// Construye el modelo de edicion de un usuario (nuevo o existente).
+        /// </summary>
         public async Task<GestionUserEditor> BuildUserEditorAsync(string? userId = null) {
             var roles = await _dbContext.Roles
                 .AsNoTracking()
@@ -220,6 +259,9 @@ namespace GPX.Web.Services {
             return editor;
         }
 
+        /// <summary>
+        /// Construye el modelo de edicion de un rol (nuevo o existente).
+        /// </summary>
         public async Task<GestionRoleEditor> BuildRoleEditorAsync(string? roleId = null) {
             if(string.IsNullOrWhiteSpace(roleId)) {
                 return new GestionRoleEditor();
@@ -238,6 +280,9 @@ namespace GPX.Web.Services {
             };
         }
 
+        /// <summary>
+        /// Construye el modelo de edicion de un perfil (nuevo o existente).
+        /// </summary>
         public async Task<GestionProfileEditor> BuildProfileEditorAsync(int? profileId = null) {
             if(profileId is null) {
                 return new GestionProfileEditor();
@@ -256,6 +301,9 @@ namespace GPX.Web.Services {
                 };
         }
 
+        /// <summary>
+        /// Construye el modelo de edicion de los modulos asignados a un perfil.
+        /// </summary>
         public async Task<GestionProfileModulesEditor> BuildProfileModulesEditorAsync(int? profileId) {
             var modules = await GetModuleOptionsAsync();
             var editor = new GestionProfileModulesEditor {
@@ -294,6 +342,9 @@ namespace GPX.Web.Services {
             return editor;
         }
 
+        /// <summary>
+        /// Guarda (alta o edicion) un usuario.
+        /// </summary>
         public async Task<GestionOperationResult> SaveUserAsync(GestionUserEditor editor) {
             var email = editor.Email.Trim();
             var fullName = editor.FullName.Trim();
@@ -372,6 +423,9 @@ namespace GPX.Web.Services {
                 : syncClaimsResult;
         }
 
+        /// <summary>
+        /// Guarda (alta o edicion) un rol.
+        /// </summary>
         public async Task<GestionOperationResult> SaveRoleAsync(GestionRoleEditor editor) {
             var roleName = editor.Name.Trim();
             var isNew = string.IsNullOrWhiteSpace(editor.Id);
@@ -407,6 +461,9 @@ namespace GPX.Web.Services {
                 : syncClaimsResult;
         }
 
+        /// <summary>
+        /// Guarda (alta o edicion) un perfil.
+        /// </summary>
         public async Task<GestionOperationResult> SaveProfileAsync(GestionProfileEditor editor) {
             var name = editor.Name.Trim();
             var description = editor.Description.Trim();
@@ -437,6 +494,9 @@ namespace GPX.Web.Services {
             return GestionOperationResult.Success(editor.Id is null ? "Perfil creado correctamente." : "Perfil actualizado correctamente.");
         }
 
+        /// <summary>
+        /// Guarda la asignacion de modulos de un perfil.
+        /// </summary>
         public async Task<GestionOperationResult> SaveProfileModulesAsync(GestionProfileModulesEditor editor) {
             if(editor.ProfileId is null) {
                 return GestionOperationResult.Failure("Selecciona un perfil para guardar su mapa de modulos.");
@@ -478,6 +538,9 @@ namespace GPX.Web.Services {
             return GestionOperationResult.Success("Modulos del perfil actualizados correctamente.");
         }
 
+        /// <summary>
+        /// Agrupa los modulos por su modulo padre para la navegacion.
+        /// </summary>
         public IReadOnlyList<GestionProfileModuleGroup> GroupModules(GestionProfileModulesEditor editor) =>
             editor.Modules
                 .GroupBy(module => new { module.ParentCode, module.ParentName, module.ParentDisplayOrder })
@@ -531,6 +594,9 @@ namespace GPX.Web.Services {
                     group => (IReadOnlyList<string>)group.Select(item => item.Permission).OrderBy(value => value).ToList());
         }
 
+        /// <summary>
+        /// Combina una coleccion de codigos de permiso en una cadena de texto.
+        /// </summary>
         private static string JoinPermissions(IEnumerable<Claim> claims) =>
             string.Join(Environment.NewLine, claims
                 .Where(claim => claim.Type == AppClaimTypes.Permission)
@@ -538,6 +604,9 @@ namespace GPX.Web.Services {
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .OrderBy(value => value));
 
+        /// <summary>
+        /// Separa una cadena de texto de permisos en su coleccion de codigos.
+        /// </summary>
         private static IReadOnlyList<string> ParsePermissions(string permissionsText) =>
             permissionsText
                 .Split(["\r\n", "\n", ",", ";"], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
@@ -545,6 +614,9 @@ namespace GPX.Web.Services {
                 .OrderBy(value => value)
                 .ToList();
 
+        /// <summary>
+        /// Sincroniza los claims de permisos con la configuracion actual de un usuario o rol.
+        /// </summary>
         private static async Task<GestionOperationResult> SyncPermissionClaimsAsync(
             Func<Task<IList<Claim>>> getClaims,
             Func<Claim, Task<IdentityResult>> addClaim,

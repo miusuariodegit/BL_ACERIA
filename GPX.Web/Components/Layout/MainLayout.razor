@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Layout principal de la aplicacion autenticada: navegacion por modulos, tema, modo de tamano y branding dinamico.
+   ========================================================================================== *@
 @using GPX.Web.Services
 @using System.Security.Claims
 @inherits LayoutComponentBase
@@ -211,6 +214,9 @@
     IReadOnlyList<ModuleGroupItem> VisibleModuleGroups { get; set; } = [];
     IReadOnlyList<HeaderMenuItem> HeaderMenuItems { get; set; } = [];
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         locationChangeSubscription = NavigationManager.RegisterLocationChangingHandler(_ => {
             if(SideMenuMode == DrawerMode.Overlap) {
@@ -322,5 +328,8 @@
         public bool Visible { get; set; } = true;
     }
 
+    /// <summary>
+    /// Dispose.
+    /// </summary>
     public void Dispose() => locationChangeSubscription?.Dispose();
 }

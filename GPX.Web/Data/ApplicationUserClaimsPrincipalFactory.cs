@@ -3,7 +3,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
+// [GPX-DOC-v1] ================================================================================
+// Genera los claims del usuario autenticado, incluyendo utilidades para anadir o eliminar claims de un
+// ClaimsIdentity.
+// ================================================================================================
+
 namespace GPX.Web.Data {
+    /// <summary>
+    /// Clase ApplicationUserClaimsPrincipalFactory. Genera los claims del usuario autenticado, incluyendo
+    /// utilidades para anadir o eliminar claims de un ClaimsIdentity.
+    /// </summary>
     public class ApplicationUserClaimsPrincipalFactory(
         UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
@@ -11,6 +20,9 @@ namespace GPX.Web.Data {
         ApplicationDbContext dbContext)
         : UserClaimsPrincipalFactory<ApplicationUser, IdentityRole>(userManager, roleManager, optionsAccessor) {
 
+        /// <summary>
+        /// Genera el ClaimsPrincipal del usuario autenticado anadiendo los claims propios de la aplicacion.
+        /// </summary>
         public override async Task<ClaimsPrincipal> CreateAsync(ApplicationUser user) {
             var principal = await base.CreateAsync(user);
             var identity = (ClaimsIdentity)principal.Identity!;
@@ -49,7 +61,14 @@ namespace GPX.Web.Data {
         }
     }
 
+    /// <summary>
+    /// Clase ClaimsIdentityExtensions. Genera los claims del usuario autenticado, incluyendo utilidades
+    /// para anadir o eliminar claims de un ClaimsIdentity.
+    /// </summary>
     internal static class ClaimsIdentityExtensions {
+        /// <summary>
+        /// Remove Claim If Exists.
+        /// </summary>
         public static void RemoveClaimIfExists(this ClaimsIdentity identity, string claimType) {
             var existingClaims = identity.FindAll(claimType).ToList();
             foreach(var claim in existingClaims) {
@@ -57,6 +76,9 @@ namespace GPX.Web.Data {
             }
         }
 
+        /// <summary>
+        /// Remove Claims.
+        /// </summary>
         public static void RemoveClaims(this ClaimsIdentity identity, string claimType) =>
             identity.RemoveClaimIfExists(claimType);
     }

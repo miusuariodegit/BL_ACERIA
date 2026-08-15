@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Documento raiz de la aplicacion Blazor: head/body, carga de tema y modo de tamano.
+   ========================================================================================== *@
 @using GPX.Web.Components
 @using GPX.Web.Services
 @using GPX.Web.Utils
@@ -59,6 +62,9 @@
     SizeMode SizeMode { get; set; }
     IComponentRenderMode? RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account") ? null : new InteractiveServerRenderMode(false);
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         ThemeManager.ObtainTheme(HttpContext?.Request.Cookies.Select(x => new KeyValuePairSerializer<string, string>(x.Key, x.Value)).ToList());
         await base.OnInitializedAsync();

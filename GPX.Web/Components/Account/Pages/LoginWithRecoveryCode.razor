@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de Identity: acceso mediante codigo de recuperacion.
+   ========================================================================================== *@
 @page "/Account/LoginWithRecoveryCode"
 
 @using System.ComponentModel.DataAnnotations
@@ -47,12 +50,18 @@
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         // Ensure the user has gone through the username & password screen first
         user = await SignInManager.GetTwoFactorAuthenticationUserAsync() ??
             throw new InvalidOperationException("Unable to load two-factor authentication user.");
     }
 
+    /// <summary>
+    /// On Valid Submit (operacion asincrona).
+    /// </summary>
     private async Task OnValidSubmitAsync() {
         var recoveryCode = Input.RecoveryCode.Replace(" ", string.Empty);
 

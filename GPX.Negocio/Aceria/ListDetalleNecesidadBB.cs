@@ -1,9 +1,18 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
+// [GPX-DOC-v1] ================================================================================
+// Modelo de vista del detalle de necesidad de beam blank por orden y calidad: toneladas de necesidad y
+// coladas necesarias vs reales.
+// ================================================================================================
+
 namespace GPX.Negocio.Aceria
 {
+    /// <summary>
+    /// Clase ListDetalleNecesidadBB. Modelo de vista del detalle de necesidad de beam blank por orden y
+    /// calidad: toneladas de necesidad y coladas necesarias vs reales.
+    /// </summary>
     public class ListDetalleNecesidadBB
     {
         public int OrdenFab { get; set; } = 0;

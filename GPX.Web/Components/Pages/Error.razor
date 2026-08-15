@@ -1,4 +1,7 @@
-﻿@page "/Error"
+@* [GPX-DOC-v1] ======================================================================
+   Ruta /Error. Pagina de error generica de la aplicacion.
+   ========================================================================================== *@
+@page "/Error"
 @using System.Diagnostics
 
 <PageTitle>Error</PageTitle>
@@ -31,6 +34,9 @@
     private string? RequestId { get; set; }
     private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
+    /// <summary>
+    /// On Initialized.
+    /// </summary>
     protected override void OnInitialized() =>
         RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
 }

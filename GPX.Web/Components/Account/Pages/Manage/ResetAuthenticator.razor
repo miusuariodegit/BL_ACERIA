@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de gestion de cuenta: reinicio de la clave de la aplicacion autenticadora.
+   ========================================================================================== *@
 @page "/Account/Manage/ResetAuthenticator"
 
 @using Microsoft.AspNetCore.Identity
@@ -31,6 +34,9 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
+    /// <summary>
+    /// On Submit (operacion asincrona).
+    /// </summary>
     private async Task OnSubmitAsync()
     {
         var user = await UserAccessor.GetRequiredUserAsync(HttpContext);

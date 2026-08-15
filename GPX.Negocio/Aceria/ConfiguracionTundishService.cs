@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using GPX.Negocio.ORM;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -7,13 +7,25 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
+// [GPX-DOC-v1] ================================================================================
+// Servicio de configuracion de tundish: activacion de una version y consulta de versiones por rango de
+// fechas.
+// ================================================================================================
+
 namespace GPX.Negocio.Aceria
 {
+    /// <summary>
+    /// Clase ConfiguracionTundishService. Servicio de configuracion de tundish: activacion de una version y
+    /// consulta de versiones por rango de fechas.
+    /// </summary>
     public class ConfiguracionTundishService
     {
 
         private readonly string cnn;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase ConfiguracionTundishService.
+        /// </summary>
         public ConfiguracionTundishService(IConfiguration configuration)
         {
             cnn = configuration.GetConnectionString("DefaultConnection")
@@ -22,6 +34,9 @@ namespace GPX.Negocio.Aceria
 
 
 
+        /// <summary>
+        /// Marca como activa una version de configuracion de tundish identificada por su Id.
+        /// </summary>
         public async Task<Boolean> ActivaVersionTundish(string IdVersion)
         {
             try
@@ -45,6 +60,9 @@ namespace GPX.Negocio.Aceria
 
 
 
+        /// <summary>
+        /// Consulta las versiones de configuracion de tundish creadas dentro de un rango de fechas.
+        /// </summary>
         public async Task<List<ConfiguracionTundishControl>> CansultaVercionXRango(DateTime FechaInicio, DateTime FechaFin)
         {
             try

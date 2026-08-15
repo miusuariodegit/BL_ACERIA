@@ -1,9 +1,18 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
+// [GPX-DOC-v1] ================================================================================
+// Modelo de vista para el listado de versiones de tundish: estado, fechas, autor, totales y filtros
+// disponibles.
+// ================================================================================================
+
 namespace GPX.Negocio.Aceria
 {
+    /// <summary>
+    /// Clase ListadoVersionVm. Modelo de vista para el listado de versiones de tundish: estado, fechas,
+    /// autor, totales y filtros disponibles.
+    /// </summary>
     public  class ListadoVersionVm
     {
         public string IdVersion { get; set; } = string.Empty;

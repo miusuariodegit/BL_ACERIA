@@ -1,9 +1,20 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 
+// [GPX-DOC-v1] ================================================================================
+// Migracion que anade la jerarquia padre/hijo a AppModules para el menu de navegacion.
+// ================================================================================================
+
 #nullable disable
 
 namespace GPX.Web.Migrations {
+    /// <summary>
+    /// Clase AddModuleNavigationParents. Migracion que anade la jerarquia padre/hijo a AppModules para el
+    /// menu de navegacion.
+    /// </summary>
     public partial class AddModuleNavigationParents : Migration {
+        /// <summary>
+        /// Up.
+        /// </summary>
         protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.AddColumn<string>(
                 name: "ParentCode",
@@ -37,6 +48,9 @@ namespace GPX.Web.Migrations {
                 defaultValue: 0);
         }
 
+        /// <summary>
+        /// Down.
+        /// </summary>
         protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropColumn(
                 name: "ParentCode",

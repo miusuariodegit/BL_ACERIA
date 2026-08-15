@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de Identity: verificacion de codigo de doble factor.
+   ========================================================================================== *@
 @page "/Account/LoginWith2fa"
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
@@ -55,12 +58,18 @@
     [SupplyParameterFromQuery]
     private bool RememberMe { get; set; }
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         // Ensure the user has gone through the username & password screen first
         user = await SignInManager.GetTwoFactorAuthenticationUserAsync() ??
             throw new InvalidOperationException("Unable to load two-factor authentication user.");
     }
 
+    /// <summary>
+    /// On Valid Submit (operacion asincrona).
+    /// </summary>
     private async Task OnValidSubmitAsync() {
         var authenticatorCode = Input.TwoFactorCode!.Replace(" ", string.Empty).Replace("-", string.Empty);
         var result = await SignInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, RememberMe, Input.RememberMachine);

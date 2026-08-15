@@ -1,4 +1,4 @@
-﻿
+
 using GPX.Negocio.COP;
 using System;
 using System.Collections.Generic;
@@ -6,8 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// [GPX-DOC-v1] ================================================================================
+// Entidad del calendario de fusion: sociedad, centro, fecha y franjas horarias (hasta 16) programadas.
+// ================================================================================================
+
 namespace GPX.Negocio.ORM
 {
+    /// <summary>
+    /// Clase CalendarioFusionHorno. Entidad del calendario de fusion: sociedad, centro, fecha y franjas
+    /// horarias (hasta 16) programadas.
+    /// </summary>
     public class CalendarioFusionHorno
     {
         public long cafId { get; set; } = 0;

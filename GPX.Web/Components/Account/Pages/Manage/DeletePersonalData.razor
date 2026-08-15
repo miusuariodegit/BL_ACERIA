@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de gestion de cuenta: eliminacion de datos personales.
+   ========================================================================================== *@
 @page "/Account/Manage/DeletePersonalData"
 
 @using System.ComponentModel.DataAnnotations
@@ -46,12 +49,18 @@
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         Input ??= new();
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
         requirePassword = await UserManager.HasPasswordAsync(user);
     }
 
+    /// <summary>
+    /// On Valid Submit (operacion asincrona).
+    /// </summary>
     private async Task OnValidSubmitAsync() {
         if(requirePassword && !await UserManager.CheckPasswordAsync(user, Input.Password)) {
             message = "Error: Incorrect password.";

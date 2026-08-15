@@ -7,11 +7,19 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+// [GPX-DOC-v1] ================================================================================
+// Metadatos autogenerados de la migracion inicial de Identity. No editar a mano.
+// ================================================================================================
+
 #nullable disable
 
 namespace GPX.Web.Migrations {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("00000000000000_CreateIdentitySchema")]
+    /// <summary>
+    /// Clase CreateIdentitySchema. Metadatos autogenerados de la migracion inicial de Identity. No editar a
+    /// mano.
+    /// </summary>
     partial class CreateIdentitySchema {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder) {

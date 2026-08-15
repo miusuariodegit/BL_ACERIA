@@ -1,3 +1,8 @@
+# [GPX-DOC-v1] ==========================================================================================
+# Declaracion de proveedores Terraform usados para aprovisionar el cluster EKS de GPB-Aceria:
+# aws (recursos AWS), tls (certificado OIDC del cluster) y dns (resolucion de IP del endpoint EKS).
+# ==============================================================================================
+
 terraform {
   required_version = ">= 1.3"
 

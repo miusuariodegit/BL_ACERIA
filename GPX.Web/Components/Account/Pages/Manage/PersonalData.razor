@@ -1,4 +1,7 @@
-﻿@page "/Account/Manage/PersonalData"
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de gestion de cuenta: descarga de datos personales.
+   ========================================================================================== *@
+@page "/Account/Manage/PersonalData"
 
 @inject IdentityUserAccessor UserAccessor
 
@@ -28,6 +31,9 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         _ = await UserAccessor.GetRequiredUserAsync(HttpContext);
     }

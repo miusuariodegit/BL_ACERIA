@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de gestion de cuenta: administracion del doble factor de autenticacion.
+   ========================================================================================== *@
 @page "/Account/Manage/TwoFactorAuthentication"
 
 @using Microsoft.AspNetCore.Http.Features
@@ -88,6 +91,9 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         var user = await UserAccessor.GetRequiredUserAsync(HttpContext);
         canTrack = HttpContext.Features.Get<ITrackingConsentFeature>()?.CanTrack ?? true;
@@ -97,6 +103,9 @@
         recoveryCodesLeft = await UserManager.CountRecoveryCodesAsync(user);
     }
 
+    /// <summary>
+    /// On Submit Forget Browser (operacion asincrona).
+    /// </summary>
     private async Task OnSubmitForgetBrowserAsync() {
         await SignInManager.ForgetTwoFactorClientAsync();
 

@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de Identity: formulario de acceso (login local y SSO Microsoft 365), con branding dinamico.
+   ========================================================================================== *@
 @page "/Account/Login"
 
 @using System.ComponentModel.DataAnnotations
@@ -73,6 +76,9 @@
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
+    /// <summary>
+    /// Login User.
+    /// </summary>
     public async Task LoginUser() {
         var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
         if(result.Succeeded) {

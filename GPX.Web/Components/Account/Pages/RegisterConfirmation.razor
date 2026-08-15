@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de Identity: confirmacion de registro.
+   ========================================================================================== *@
 @page "/Account/RegisterConfirmation"
 
 @using System.Text
@@ -47,6 +50,9 @@
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         if(Email is null) {
             RedirectManager.RedirectTo("");

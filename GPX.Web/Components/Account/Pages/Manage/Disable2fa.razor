@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de gestion de cuenta: deshabilitar doble factor de autenticacion.
+   ========================================================================================== *@
 @page "/Account/Manage/Disable2fa"
 
 @using Microsoft.AspNetCore.Identity
@@ -33,6 +36,9 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
 
@@ -41,6 +47,9 @@
         }
     }
 
+    /// <summary>
+    /// On Submit (operacion asincrona).
+    /// </summary>
     private async Task OnSubmitAsync() {
         var disable2faResult = await UserManager.SetTwoFactorEnabledAsync(user, false);
         if(!disable2faResult.Succeeded) {

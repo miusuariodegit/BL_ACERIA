@@ -1,4 +1,4 @@
-﻿
+
 using GPX.Negocio.COP;
 using System;
 using System.Collections.Generic;
@@ -6,8 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// [GPX-DOC-v1] ================================================================================
+// Cabecera de una version de configuracion de tundish: autor, fechas, necesidad por tipo de BB,
+// estandar seleccionado y listas asociadas.
+// ================================================================================================
+
 namespace GPX.Negocio.ORM
 {
+    /// <summary>
+    /// Clase ConfiguracionTundishControl. Cabecera de una version de configuracion de tundish: autor,
+    /// fechas, necesidad por tipo de BB, estandar seleccionado y listas asociadas.
+    /// </summary>
     public class ConfiguracionTundishControl
     {
         public long IdVersion { get; set; } = 0;

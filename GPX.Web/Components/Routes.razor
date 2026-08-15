@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Configura el Router de Blazor y el layout por defecto de la aplicacion.
+   ========================================================================================== *@
 <Router AppAssembly="typeof(Program).Assembly">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Components.Layout.MainLayout)">

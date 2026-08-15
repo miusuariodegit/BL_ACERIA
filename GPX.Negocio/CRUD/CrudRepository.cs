@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using GPX.Negocio.ORM;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -9,13 +9,25 @@ using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 
+// [GPX-DOC-v1] ================================================================================
+// Repositorio generico con operaciones de alta, consulta, actualizacion y eliminacion (Dapper) para
+// las entidades principales del dominio de Aceria.
+// ================================================================================================
+
 namespace GPX.Negocio.CRUD
 {
+    /// <summary>
+    /// Clase CrudRepository. Repositorio generico con operaciones de alta, consulta, actualizacion y
+    /// eliminacion (Dapper) para las entidades principales del dominio de Aceria.
+    /// </summary>
     public  class CrudRepository
     {
 
         private readonly string cnn;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase CrudRepository.
+        /// </summary>
         public CrudRepository(IConfiguration configuration)
         {
             cnn = configuration.GetConnectionString("DefaultConnection")
@@ -43,6 +55,9 @@ namespace GPX.Negocio.CRUD
 
         #region GestionStockSemi
 
+        /// <summary>
+        /// Inserta un nuevo registro de gestion stock semi.
+        /// </summary>
         public async Task<Boolean> AltaGestionStockSemiAsync(GestionStockSemi values)
         {
             try
@@ -86,6 +101,9 @@ namespace GPX.Negocio.CRUD
                 throw new Exception("Error al ejecutar sp_CRUD_GestionStockSemi_Insert, detalle: \n" + ex.Message, ex);
             }
         }
+        /// <summary>
+        /// Actualiza un registro existente de gestion stock semi.
+        /// </summary>
         public async Task<Boolean> ActualizarGestionStockSemiAsync(GestionStockSemi values)
         {
             try
@@ -129,6 +147,9 @@ namespace GPX.Negocio.CRUD
             }
         }
 
+        /// <summary>
+        /// Elimina un registro de gestion stock semi.
+        /// </summary>
         public async Task<Boolean> EliminarGestionStockSemiAsync(GestionStockSemi values)
         {
             try
@@ -155,6 +176,9 @@ namespace GPX.Negocio.CRUD
 
         #region OrdenCalidadPlanificacion 
 
+        /// <summary>
+        /// Consulta los registros de orden calidad planificacion.
+        /// </summary>
         public async Task<List<OrdenCalidadPlanificacion>> ConsultaOrdenCalidadPlanificacionAsync()
         {
             try
@@ -177,6 +201,9 @@ namespace GPX.Negocio.CRUD
 
         #region CalendarioFusionHorno
 
+        /// <summary>
+        /// Consulta los registros de calendario fusion horno.
+        /// </summary>
         public async Task<List<CalendarioFusionHorno>> ConsultaCalendarioFusionHornoAsync()
         {
             try
@@ -196,6 +223,9 @@ namespace GPX.Negocio.CRUD
             }
         }
 
+        /// <summary>
+        /// Inserta un nuevo registro de calendario fusion horno.
+        /// </summary>
         public async Task<Boolean> AltaCalendarioFusionHornoAsync(CalendarioFusionHorno values)
         {
             try
@@ -268,6 +298,9 @@ namespace GPX.Negocio.CRUD
                 throw new Exception("Error al ejecutar sp_CRUD_CalendarioFusionHorno_Insert, detalle: \n" + ex.Message, ex);
             }
         }
+        /// <summary>
+        /// Actualiza un registro existente de calendario fusion horno.
+        /// </summary>
         public async Task<Boolean> ActualizarCalendarioFusionHornoAsync(CalendarioFusionHorno values)
         {
             try
@@ -341,6 +374,9 @@ namespace GPX.Negocio.CRUD
             }
         }
 
+        /// <summary>
+        /// Elimina un registro de calendario fusion horno.
+        /// </summary>
         public async Task<Boolean> EliminarCalendarioFusionHornoAsync(CalendarioFusionHorno values)
         {
             try
@@ -369,6 +405,9 @@ namespace GPX.Negocio.CRUD
         //genera las funciones para el CRUD de la tabla TundishStandard
 
 
+        /// <summary>
+        /// Consulta los registros de tundish standard.
+        /// </summary>
         public async Task<List<TundishStandard>> ConsultaTundishStandardAsync()
         {
             try
@@ -388,6 +427,9 @@ namespace GPX.Negocio.CRUD
             }
         }
 
+        /// <summary>
+        /// Inserta un nuevo registro de tundish standard.
+        /// </summary>
         public async Task<Boolean> AltaTundishStandardAsync(TundishStandard values)
         {
             try
@@ -422,6 +464,9 @@ namespace GPX.Negocio.CRUD
                 throw new Exception("Error al ejecutar sp_CRUD_TundishStandard_Insert, detalle: \n" + ex.Message, ex);
             }
         }
+        /// <summary>
+        /// Actualiza un registro existente de tundish standard.
+        /// </summary>
         public async Task<Boolean> ActualizarTundishStandardAsync(TundishStandard values)
         {
             try
@@ -455,6 +500,9 @@ namespace GPX.Negocio.CRUD
                 throw new Exception("Error al ejecutar sp_CRUD_TundishStandard_Update, detalle: \n" + ex.Message, ex);
             }
         }
+        /// <summary>
+        /// Elimina un registro de calendario fusion horno.
+        /// </summary>
         public async Task<Boolean> EliminarCalendarioFusionHornoAsync(TundishStandard values)
         {
             try
@@ -482,6 +530,9 @@ namespace GPX.Negocio.CRUD
 
         #region Tundish
 
+        /// <summary>
+        /// Inserta un nuevo registro de tundish.
+        /// </summary>
         public async Task<Boolean> AltaTundishAsync(Tundish values)
         {
             try
@@ -520,6 +571,9 @@ namespace GPX.Negocio.CRUD
         #endregion
 
         #region ConfiguracionAceria   
+        /// <summary>
+        /// Consulta los registros de configuracion aceria.
+        /// </summary>
         public async Task<List<ConfiguracionAceria>> ConsultaConfiguracionAceriaAsync()
         {
             try
@@ -539,6 +593,9 @@ namespace GPX.Negocio.CRUD
             }
         }
 
+        /// <summary>
+        /// Actualiza un registro existente de configuracion aceria.
+        /// </summary>
         public async Task<Boolean> ActualizarConfiguracionAceriaAsync(ConfiguracionAceria values)
         {
             try
@@ -587,6 +644,9 @@ namespace GPX.Negocio.CRUD
 
         #region ControlColadasCargadas
 
+        /// <summary>
+        /// Inserta un nuevo registro de control coladas cargadas.
+        /// </summary>
         public async Task<Boolean> AltaControlColadasCargadasAsync(ControlColadasCargadas values)
         {
             try
@@ -621,6 +681,9 @@ namespace GPX.Negocio.CRUD
         }
 
 
+        /// <summary>
+        /// Elimina un registro de control coladas cargadas.
+        /// </summary>
         public async Task<Boolean> EliminarControlColadasCargadasAsync(int IdRegistro)
         {
             try
@@ -647,6 +710,9 @@ namespace GPX.Negocio.CRUD
 
         #region ConfiguracionTundishControl
 
+        /// <summary>
+        /// Consulta los registros de configuracion tundish control.
+        /// </summary>
         public async Task<List<ConfiguracionTundishControl>> ConsultaConfiguracionTundishControlAsync()
         {
             try
@@ -664,6 +730,9 @@ namespace GPX.Negocio.CRUD
             }
         }
 
+        /// <summary>
+        /// Inserta un nuevo registro de configuracion tundish control.
+        /// </summary>
         public async Task<Boolean> AltaConfiguracionTundishControlAsync(ConfiguracionTundishControl values)
         {
             try
@@ -709,6 +778,9 @@ namespace GPX.Negocio.CRUD
             }
         }
 
+        /// <summary>
+        /// Actualiza un registro existente de configuracion tundish control.
+        /// </summary>
         public async Task<Boolean> ActualizarConfiguracionTundishControlAsync(ConfiguracionTundishControl values)
         {
             try
@@ -752,6 +824,9 @@ namespace GPX.Negocio.CRUD
             }
         }
 
+        /// <summary>
+        /// Elimina un registro de configuracion tundish control.
+        /// </summary>
         public async Task<Boolean> EliminarConfiguracionTundishControlAsync(long IdVersion)
         {
             try
@@ -775,6 +850,9 @@ namespace GPX.Negocio.CRUD
 
         #region CentrosXsociedad
 
+        /// <summary>
+        /// Consulta los registros de centros xsociedad.
+        /// </summary>
         public async Task<List<CentrosXsociedad>> ConsultaCentrosXsociedadAsync()
         {
             try
@@ -792,6 +870,9 @@ namespace GPX.Negocio.CRUD
             }
         }
 
+        /// <summary>
+        /// Inserta un nuevo registro de centros xsociedad.
+        /// </summary>
         public async Task<Boolean> AltaCentrosXsociedadAsync(CentrosXsociedad values)
         {
             try
@@ -821,6 +902,9 @@ namespace GPX.Negocio.CRUD
             }
         }
 
+        /// <summary>
+        /// Actualiza un registro existente de centros xsociedad.
+        /// </summary>
         public async Task<Boolean> ActualizarCentrosXsociedadAsync(CentrosXsociedad values)
         {
             try
@@ -848,6 +932,9 @@ namespace GPX.Negocio.CRUD
             }
         }
 
+        /// <summary>
+        /// Elimina un registro de centros xsociedad.
+        /// </summary>
         public async Task<Boolean> EliminarCentrosXsociedadAsync(int csID)
         {
             try

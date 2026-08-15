@@ -6,11 +6,22 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+// [GPX-DOC-v1] ================================================================================
+// Snapshot autogenerado por EF Core del modelo de datos actual. No editar a mano.
+// ================================================================================================
+
 #nullable disable
 
 namespace GPX.Web.Migrations {
     [DbContext(typeof(ApplicationDbContext))]
+    /// <summary>
+    /// Clase ApplicationDbContextModelSnapshot. Snapshot autogenerado por EF Core del modelo de datos
+    /// actual. No editar a mano.
+    /// </summary>
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot {
+        /// <summary>
+        /// Build Model.
+        /// </summary>
         protected override void BuildModel(ModelBuilder modelBuilder) {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,10 +1,19 @@
-﻿using GPX.Negocio.COP;
+using GPX.Negocio.COP;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
+// [GPX-DOC-v1] ================================================================================
+// Modelo de vista de propuesta de distribucion de tundish: fechas, numero de coladas, vida util y
+// desglose por calidad.
+// ================================================================================================
+
 namespace GPX.Negocio.Aceria
 {
+    /// <summary>
+    /// Clase ListaPropuestaDistribucion. Modelo de vista de propuesta de distribucion de tundish: fechas,
+    /// numero de coladas, vida util y desglose por calidad.
+    /// </summary>
     public class ListaPropuestaDistribucion
     {
         public int NumTRegistro { get; set; } = 0;

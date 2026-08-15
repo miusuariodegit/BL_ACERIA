@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Layout compartido de las paginas de autenticacion (Identity).
+   ========================================================================================== *@
 @inherits LayoutComponentBase
 
 @inject NavigationManager NavigationManager
@@ -14,6 +17,9 @@
     [CascadingParameter]
     private HttpContext? HttpContext { get; set; }
 
+    /// <summary>
+    /// On Parameters Set.
+    /// </summary>
     protected override void OnParametersSet() {
         if (HttpContext is null) {
             NavigationManager.Refresh(forceReload: true);

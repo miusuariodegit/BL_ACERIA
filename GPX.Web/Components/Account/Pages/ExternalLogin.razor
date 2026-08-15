@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de Identity: inicio de sesion externo (Microsoft 365 / OpenID Connect).
+   ========================================================================================== *@
 @page "/Account/ExternalLogin"
 
 @using System.Security.Claims
@@ -42,6 +45,9 @@
     [SupplyParameterFromQuery]
     private string? Action { get; set; }
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         if(RemoteError is not null) {
             RedirectManager.RedirectToWithStatus("Account/Login", $"Error from external provider: {RemoteError}", HttpContext);
@@ -62,6 +68,9 @@
         RedirectManager.RedirectTo("Account/Login");
     }
 
+    /// <summary>
+    /// On Login Callback (operacion asincrona).
+    /// </summary>
     private async Task OnLoginCallbackAsync() {
         var result = await SignInManager.ExternalLoginSignInAsync(
             externalLoginInfo.LoginProvider,
@@ -111,6 +120,9 @@
         RedirectManager.RedirectTo(ReturnUrl);
     }
 
+    /// <summary>
+    /// Create Invitado User (operacion asincrona).
+    /// </summary>
     private async Task<ApplicationUser> CreateInvitadoUserAsync(string email) {
         var invitadoProfile = await DbContext.Profiles.FirstAsync(profile => profile.Name == "Invitado");
         var fullName = externalLoginInfo.Principal.FindFirstValue(ClaimTypes.Name)

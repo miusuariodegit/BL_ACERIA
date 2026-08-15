@@ -1,11 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// [GPX-DOC-v1] ================================================================================
+// Estandar de tundish: horas de cierre por boca, si esta activo, prioridad y totales por tipo de BB.
+// ================================================================================================
+
 namespace GPX.Negocio.ORM
 {
+    /// <summary>
+    /// Clase TundishStandard. Estandar de tundish: horas de cierre por boca, si esta activo, prioridad y
+    /// totales por tipo de BB.
+    /// </summary>
     public class TundishStandard
     {
         public int tsId { get; set; } = 0;

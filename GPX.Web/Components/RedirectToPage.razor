@@ -1,8 +1,14 @@
+@* [GPX-DOC-v1] ======================================================================
+   Componente utilitario para redireccion programatica a otra ruta.
+   ========================================================================================== *@
 @inject NavigationManager NavigationManager
 
 @code {
     [Parameter] public string Page { get; set; } = "/";
 
+    /// <summary>
+    /// On After Render.
+    /// </summary>
     protected override void OnAfterRender(bool firstRender) {
         if(firstRender) {
             NavigationManager.NavigateTo(Page, true);

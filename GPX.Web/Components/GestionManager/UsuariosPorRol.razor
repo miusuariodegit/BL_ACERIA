@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Ruta /gestion/usuarios-por-rol. Consulta de usuarios agrupados por rol.
+   ========================================================================================== *@
 @page "/gestion/usuarios-por-rol"
 @attribute [Authorize(Policy = "Module:ADMIN_ROLE_USERS")]
 
@@ -67,6 +70,9 @@
     bool IsLoading = true;
     IReadOnlyList<GestionRoleUsersItem> Roles = [];
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         await LoadAsync();
     }

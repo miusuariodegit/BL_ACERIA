@@ -1,4 +1,4 @@
-﻿
+
 using DevExpress.Blazor;
 using GPX.Negocio.Aceria;
 using GPX.Negocio.COP;
@@ -10,8 +10,17 @@ using System.Globalization;
 using System.Security.Claims;
 using System.Text.Json;
 
+// [GPX-DOC-v1] ================================================================================
+// Codigo tras la vista de configuracion de tundish: calculo de necesidad, estandares, propuesta de
+// distribucion de coladas y guardado de versiones.
+// ================================================================================================
+
 namespace GPX.Web.Components.VIEWS.Aceria;
 
+/// <summary>
+/// Clase ConfiguracionTundish. Codigo tras la vista de configuracion de tundish: calculo de necesidad,
+/// estandares, propuesta de distribucion de coladas y guardado de versiones.
+/// </summary>
 public partial class ConfiguracionTundish : ComponentBase
 {
     [Inject] protected CrudRepository CrudRepository { get; set; } = default!;
@@ -72,12 +81,18 @@ public partial class ConfiguracionTundish : ComponentBase
 
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
         await CargarCatalogosConstantes();
         Limpieza(false);
     }
 
+    /// <summary>
+    /// Cargar Catalogos Constantes.
+    /// </summary>
     protected async Task CargarCatalogosConstantes()
     {
         ListaTundisStandar = (await CrudRepository.ConsultaTundishStandardAsync())
@@ -89,6 +104,9 @@ public partial class ConfiguracionTundish : ComponentBase
         ListaConfiguracionAceria = await CrudRepository.ConsultaConfiguracionAceriaAsync();
     }
 
+    /// <summary>
+    /// Limpieza.
+    /// </summary>
     protected void Limpieza(bool limpiarCatalogos = true)
     {
         ListaTundishReales = new();
@@ -111,6 +129,9 @@ public partial class ConfiguracionTundish : ComponentBase
         ActualizarEstadoVersion("---");
     }
 
+    /// <summary>
+    /// On Fecha Inicio Changed.
+    /// </summary>
     protected async Task OnFechaInicioChanged(DateTime fecha)
     {
         FechaInicio = fecha;
@@ -118,6 +139,9 @@ public partial class ConfiguracionTundish : ComponentBase
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// On Fecha Fin Changed.
+    /// </summary>
     protected async Task OnFechaFinChanged(DateTime fecha)
     {
         FechaFin = fecha;
@@ -125,6 +149,9 @@ public partial class ConfiguracionTundish : ComponentBase
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// On Consultar Click.
+    /// </summary>
     protected async Task OnConsultarClick()
     {
         try
@@ -174,12 +201,18 @@ public partial class ConfiguracionTundish : ComponentBase
         }
     }
 
+    /// <summary>
+    /// On Estandar Inicial Changed.
+    /// </summary>
     protected async Task OnEstandarInicialChanged(int? id)
     {
         EstandarSeleccionado = ListaTundisStandar.FirstOrDefault(x => x.tsId == id);
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// On Calcular Tundish Click.
+    /// </summary>
     protected async Task OnCalcularTundishClick()
     {
         try
@@ -225,6 +258,9 @@ public partial class ConfiguracionTundish : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Cargar Configuracion Tundish.
+    /// </summary>
     protected void CargarConfiguracionTundish()
     {
         for (var i = 0; i < ListaTundishReales.Count; i++)
@@ -239,6 +275,9 @@ public partial class ConfiguracionTundish : ComponentBase
         RecalcularDetalleYPropuesta();
     }
 
+    /// <summary>
+    /// Cargar Configuracion Rendimiento.
+    /// </summary>
     public void CargarConfiguracionRendimiento(ListTundishDisponibles Tundish, ListTundishStandard? tundishEstandar)
     {
         if (Tundish is null || tundishEstandar is null || ListaConfiguracionAceria.Count == 0)
@@ -306,6 +345,9 @@ public partial class ConfiguracionTundish : ComponentBase
             Tundish.NumColadas = 0;
     }
 
+    /// <summary>
+    /// Cargar Datos Estandar.
+    /// </summary>
     private static void CargarDatosEstandar(ListTundishDisponibles tundish, ListTundishStandard tundishEstandar)
     {
         tundish.tsCierre1 = tundishEstandar.tsCierre1.Trim();
@@ -328,6 +370,9 @@ public partial class ConfiguracionTundish : ComponentBase
     }
 
 
+    /// <summary>
+    /// On Tundish Changed.
+    /// </summary>
     protected async Task OnTundishChanged(ListTundishDisponibles _)
     {
         RecalcularDetalleYPropuesta();
@@ -335,6 +380,9 @@ public partial class ConfiguracionTundish : ComponentBase
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Recalcular Detalle Y Propuesta.
+    /// </summary>
     protected void RecalcularDetalleYPropuesta()
     {
         var medianaTnXColadaBB1 = CalcularMediana(ListaTundishReales.Where(x => x.TnXColadaBB1 > 0).Select(x => x.TnXColadaBB1).ToList());
@@ -346,6 +394,9 @@ public partial class ConfiguracionTundish : ComponentBase
         CalcularPropuestaDistribucion();
     }
 
+    /// <summary>
+    /// Calcular Detalle Necesidad.
+    /// </summary>
     protected void CalcularDetalleNecesidad(decimal tnXColadaBB1, decimal tnXColadaBB2, decimal tnXColadaBB3, decimal minXColada)
     {
         ListaNecesidadDetalleBB = new();
@@ -410,6 +461,9 @@ public partial class ConfiguracionTundish : ComponentBase
         TnExtraBB3 = coladasTotalesBB3 * tnXColadaBB3;
     }
 
+    /// <summary>
+    /// Calcular Propuesta Distribucion.
+    /// </summary>
     protected void CalcularPropuestaDistribucion()
     {
         ListaPropuestaDistribucionColadas = new();
@@ -505,6 +559,9 @@ public partial class ConfiguracionTundish : ComponentBase
         ListaPropuestaDistribucionColadas = propuesta;
     }
 
+    /// <summary>
+    /// Aplicar Propuesta A Detalle.
+    /// </summary>
     protected void AplicarPropuestaADetalle(Dictionary<int, ListaPropuestaDistribucion> propuestaPorTundish, List<ListTundishDisponibles> tundishActivos)
     {
         foreach (var item in ListaNecesidadDetalleBB)
@@ -552,6 +609,9 @@ public partial class ConfiguracionTundish : ComponentBase
         NumMinutosNeceReales = Convert.ToInt32(Math.Ceiling(NumColadasReales * medianaMinXColada));
     }
 
+    /// <summary>
+    /// Sumar Si Existe.
+    /// </summary>
     protected void SumarSiExiste(string calidad, string tipo, int coladas)
     {
         var registro = ListaNecesidadDetalleBB.FirstOrDefault(x => x.Calidad == calidad && x.TipoBB == tipo);
@@ -559,6 +619,9 @@ public partial class ConfiguracionTundish : ComponentBase
             registro.ColadasReales += coladas;
     }
 
+    /// <summary>
+    /// On Guardar Version Click.
+    /// </summary>
     protected async Task OnGuardarVersionClick(bool nuevaVersion)
     {
         try
@@ -593,6 +656,9 @@ public partial class ConfiguracionTundish : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Crear Version Serializada.
+    /// </summary>
     protected async Task<ConfiguracionTundishControl> CrearVersionSerializada(bool nuevaVersion)
     {
         var auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -628,6 +694,9 @@ public partial class ConfiguracionTundish : ComponentBase
         };
     }
 
+    /// <summary>
+    /// On Version Changed.
+    /// </summary>
     protected async Task OnVersionChanged(long? id)
     {
         VersionSeleccionada = ListaConfiguracionTundishControl.FirstOrDefault(x => x.IdVersion == id);
@@ -638,6 +707,9 @@ public partial class ConfiguracionTundish : ComponentBase
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Cargar Version Selecionada.
+    /// </summary>
     protected void CargarVersionSelecionada()
     {
         if (VersionSeleccionada is null || VersionSeleccionada.IdVersion <= 0)
@@ -657,6 +729,9 @@ public partial class ConfiguracionTundish : ComponentBase
         ActualizarEstadoVersion($"Version {VersionSeleccionada.IdVersion} - {DateTime.Now:dd/MM/yyyy HH:mm}");
     }
 
+    /// <summary>
+    /// On Distribucion Changed.
+    /// </summary>
     protected async Task OnDistribucionChanged(ListaPropuestaDistribucion fila, string campo, int valor)
     {
         if (valor < 0)
@@ -681,6 +756,9 @@ public partial class ConfiguracionTundish : ComponentBase
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// On Distribucion Edit Model Saving.
+    /// </summary>
     protected async Task OnDistribucionEditModelSaving(GridEditModelSavingEventArgs e)
     {
         var edit = (ListaPropuestaDistribucion)e.EditModel;
@@ -720,6 +798,9 @@ public partial class ConfiguracionTundish : ComponentBase
         ActualizarEstadoVersion("Existen cambios sin guardar.");
     }
 
+    /// <summary>
+    /// On Detalle Grid Customize Element.
+    /// </summary>
     private void OnDetalleGridCustomizeElement(GridCustomizeElementEventArgs e)
     {
         if (e.ElementType != GridElementType.DataCell)
@@ -750,6 +831,9 @@ public partial class ConfiguracionTundish : ComponentBase
             e.CssClass = $"{e.CssClass} {cssClass}".Trim();
     }
 
+    /// <summary>
+    /// On Distribucion Grid Customize Element.
+    /// </summary>
     private void OnDistribucionGridCustomizeElement(GridCustomizeElementEventArgs e)
     {
         if (e.Column is not DxGridDataColumn column)
@@ -776,6 +860,9 @@ public partial class ConfiguracionTundish : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Validar Fila Distribucion.
+    /// </summary>
     protected string ValidarFilaDistribucion(ListaPropuestaDistribucion fila, IEnumerable<ListaPropuestaDistribucion>? propuesta = null)
     {
         var tundish = ListaTundishReales.FirstOrDefault(x => x.TundishActivo && x.NumTundish == fila.NumTundish);
@@ -803,6 +890,9 @@ public partial class ConfiguracionTundish : ComponentBase
         return string.Empty;
     }
 
+    /// <summary>
+    /// Existen Cambios.
+    /// </summary>
     protected bool ExistenCambios()
     {
         var actual = JsonSerializer.Serialize(ListaTundishReales, JsonOptions);
@@ -810,6 +900,9 @@ public partial class ConfiguracionTundish : ComponentBase
         return actual != original;
     }
 
+    /// <summary>
+    /// Calcular Mediana.
+    /// </summary>
     protected decimal CalcularMediana(List<decimal> numeros)
     {
         if (numeros.Count == 0)
@@ -819,6 +912,9 @@ public partial class ConfiguracionTundish : ComponentBase
         return numeros.Count % 2 != 0 ? numeros[mitad] : (numeros[mitad - 1] + numeros[mitad]) / 2m;
     }
 
+    /// <summary>
+    /// Actualizar Estado Version.
+    /// </summary>
     protected void ActualizarEstadoVersion(string mensaje)
     {
         EstadoVersion = mensaje;
@@ -826,11 +922,26 @@ public partial class ConfiguracionTundish : ComponentBase
             mensaje == "---" ? string.Empty : "estado-ok";
     }
 
+    /// <summary>
+    /// Existe Calidad.
+    /// </summary>
     protected bool ExisteCalidad(string calidad) => ListaNecesidadDetalleBB.Exists(x => x.Calidad == calidad && x.ColadasNecesarias > 0);
+    /// <summary>
+    /// Get Visible Css.
+    /// </summary>
     protected string GetVisibleCss(bool visible) => visible ? string.Empty : "hidden-col";
+    /// <summary>
+    /// Get Tipo Row Css.
+    /// </summary>
     protected static string GetTipoRowCss(string tipo) => tipo switch { "BB1" => "row-bb1", "BB2" => "row-bb2", "BB3" => "row-bb3", _ => string.Empty };
+    /// <summary>
+    /// Get Calidad Css.
+    /// </summary>
     protected static string GetCalidadCss(string calidad) => calidad.Replace("-", string.Empty).ToLowerInvariant();
 
+    /// <summary>
+    /// Agregar Tipo Faltante.
+    /// </summary>
     private void AgregarTipoFaltante(string calidad, string tipo, bool disponible, ref int counter)
     {
         if (disponible && !ListaNecesidadDetalleBB.Exists(x => x.Calidad == calidad && x.TipoBB == tipo))
@@ -839,14 +950,38 @@ public partial class ConfiguracionTundish : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Is BB.
+    /// </summary>
     private static bool IsBB(BeamBlankNecesidad x) => IsBB1(x) || IsBB2(x) || IsBB3(x);
+    /// <summary>
+    /// Is BB.
+    /// </summary>
     private static bool IsBB1(BeamBlankNecesidad x) => x.CodMaquina == 4 && (x.MatSemi?.Trim() == "BB1");
+    /// <summary>
+    /// Is BB.
+    /// </summary>
     private static bool IsBB2(BeamBlankNecesidad x) => x.CodMaquina == 4 && (x.MatSemi?.Trim() == "BB2");
+    /// <summary>
+    /// Is BB.
+    /// </summary>
     private static bool IsBB3(BeamBlankNecesidad x) => x.CodMaquina == 4 && (x.MatSemi?.Trim() == "BB3");
+    /// <summary>
+    /// Tundish Tiene BB.
+    /// </summary>
     private static bool TundishTieneBB1(ListTundishDisponibles t) => t.TnXColadaBB1 > 0 || t.tstotalBB1 > 0;
+    /// <summary>
+    /// Tundish Tiene BB.
+    /// </summary>
     private static bool TundishTieneBB2(ListTundishDisponibles t) => t.TnXColadaBB2 > 0 || t.tstotalBB2 > 0;
+    /// <summary>
+    /// Tundish Tiene BB.
+    /// </summary>
     private static bool TundishTieneBB3(ListTundishDisponibles t) => t.TnXColadaBB3 > 0 || t.tstotalBB3 > 0;
 
+    /// <summary>
+    /// Get Valor Especial Fila.
+    /// </summary>
     private static int GetValorEspecialFila(ListaPropuestaDistribucion fila, string calidad) => calidad switch
     {
         "S355-TI" => fila.S355TI,
@@ -857,6 +992,9 @@ public partial class ConfiguracionTundish : ComponentBase
         _ => 0
     };
 
+    /// <summary>
+    /// Set Valor Especial Fila.
+    /// </summary>
     private static void SetValorEspecialFila(ListaPropuestaDistribucion fila, string calidad, int valor)
     {
         switch (calidad)
@@ -869,6 +1007,9 @@ public partial class ConfiguracionTundish : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Get Campo Distribucion.
+    /// </summary>
     private static int GetCampoDistribucion(ListaPropuestaDistribucion fila, string campo) => campo switch
     {
         nameof(ListaPropuestaDistribucion.S275H) => fila.S275H,
@@ -880,6 +1021,9 @@ public partial class ConfiguracionTundish : ComponentBase
         _ => 0
     };
 
+    /// <summary>
+    /// Set Campo Distribucion.
+    /// </summary>
     private static void SetCampoDistribucion(ListaPropuestaDistribucion fila, string campo, int valor)
     {
         switch (campo)
@@ -893,6 +1037,9 @@ public partial class ConfiguracionTundish : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Clone Distribucion.
+    /// </summary>
     private static ListaPropuestaDistribucion CloneDistribucion(ListaPropuestaDistribucion source) => new()
     {
         NumTRegistro = source.NumTRegistro,
@@ -909,6 +1056,9 @@ public partial class ConfiguracionTundish : ComponentBase
         S275TI = source.S275TI
     };
 
+    /// <summary>
+    /// Copiar Valores Editables.
+    /// </summary>
     private static void CopiarValoresEditables(ListaPropuestaDistribucion source, ListaPropuestaDistribucion target)
     {
         target.S275H = source.S275H;
@@ -919,6 +1069,9 @@ public partial class ConfiguracionTundish : ComponentBase
         target.S275TI = source.S275TI;
     }
 
+    /// <summary>
+    /// Map Tundish Standard.
+    /// </summary>
     private static ListTundishStandard MapTundishStandard(TundishStandard source) => new()
     {
         tsId = source.tsId,
@@ -941,6 +1094,9 @@ public partial class ConfiguracionTundish : ComponentBase
     //protected readonly record struct VersionComboItem(long IdVersion, string DisplayText);
 
 
+    /// <summary>
+    /// Show Alert (operacion asincrona).
+    /// </summary>
     private Task ShowAlertAsync(string title, string text, MessageBoxRenderStyle renderStyle)
     {
         return DialogService.AlertAsync(new MessageBoxOptions

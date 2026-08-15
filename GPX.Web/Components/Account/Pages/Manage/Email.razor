@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de gestion de cuenta: administracion del correo electronico.
+   ========================================================================================== *@
 @page "/Account/Manage/Email"
 
 @using System.ComponentModel.DataAnnotations
@@ -53,6 +56,9 @@
     [SupplyParameterFromForm(FormName = "change-email")]
     private InputModel Input { get; set; } = new();
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
         email = await UserManager.GetEmailAsync(user);
@@ -61,6 +67,9 @@
         Input.NewEmail ??= email;
     }
 
+    /// <summary>
+    /// On Valid Submit (operacion asincrona).
+    /// </summary>
     private async Task OnValidSubmitAsync() {
         if(Input.NewEmail is null || Input.NewEmail == email) {
             message = "Your email is unchanged.";
@@ -79,6 +88,9 @@
         message = "Confirmation link to change email sent. Please check your email.";
     }
 
+    /// <summary>
+    /// On Send Email Verification (operacion asincrona).
+    /// </summary>
     private async Task OnSendEmailVerificationAsync() {
         if(email is null) {
             return;

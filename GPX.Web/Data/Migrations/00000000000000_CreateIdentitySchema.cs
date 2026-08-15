@@ -1,6 +1,10 @@
 using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+// [GPX-DOC-v1] ================================================================================
+// Migracion inicial de EF Core: crea el esquema estandar de ASP.NET Core Identity.
+// ================================================================================================
+
 #nullable disable
 
 namespace GPX.Web.Migrations {

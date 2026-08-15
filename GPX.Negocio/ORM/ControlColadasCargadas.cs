@@ -1,4 +1,4 @@
-﻿
+
 using GPX.Negocio.COP;
 using System;
 using System.Collections.Generic;
@@ -6,8 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// [GPX-DOC-v1] ================================================================================
+// Registro de coladas cargadas: fabricacion, colada, calidad/tipo/longitud del semielaborado, unidades
+// cargadas, fecha y usuario.
+// ================================================================================================
+
 namespace GPX.Negocio.ORM
 {
+    /// <summary>
+    /// Clase ControlColadasCargadas. Registro de coladas cargadas: fabricacion, colada,
+    /// calidad/tipo/longitud del semielaborado, unidades cargadas, fecha y usuario.
+    /// </summary>
     public class ControlColadasCargadas
     {
         public int IdFabGpb { get; set; } = 0;

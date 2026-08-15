@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Selector de proveedores de inicio de sesion externo, con branding dinamico.
+   ========================================================================================== *@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
 @using GPX.Web.Data
@@ -22,6 +25,9 @@
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         if(!BrandingService.IsMicrosoft365SsoEnabled) {
             return;

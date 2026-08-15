@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de gestion de cuenta: administracion de logins externos.
+   ========================================================================================== *@
 @page "/Account/Manage/ExternalLogins"
 
 @using Microsoft.AspNetCore.Authentication
@@ -74,6 +77,9 @@
     [SupplyParameterFromQuery]
     private string? Action { get; set; }
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
         currentLogins = await UserManager.GetLoginsAsync(user);
@@ -93,6 +99,9 @@
         }
     }
 
+    /// <summary>
+    /// On Submit (operacion asincrona).
+    /// </summary>
     private async Task OnSubmitAsync() {
         var result = await UserManager.RemoveLoginAsync(user, LoginProvider!, ProviderKey!);
         if(!result.Succeeded) {
@@ -103,6 +112,9 @@
         RedirectManager.RedirectToCurrentPageWithStatus("The external login was removed.", HttpContext);
     }
 
+    /// <summary>
+    /// On Get Link Login Callback (operacion asincrona).
+    /// </summary>
     private async Task OnGetLinkLoginCallbackAsync() {
         var userId = await UserManager.GetUserIdAsync(user);
         var info = await SignInManager.GetExternalLoginInfoAsync(userId);

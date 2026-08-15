@@ -1,3 +1,10 @@
+# [GPX-DOC-v1] ==========================================================================================
+# Infraestructura como codigo (Terraform) del cluster Amazon EKS que aloja GPB-Aceria:
+# VPC y subredes publicas, roles IAM de cluster/nodos, grupos de seguridad, el cluster EKS y su
+# node group gestionado, el proveedor OIDC (IRSA) y el addon del driver CSI de EBS para volumenes
+# persistentes. Los valores parametrizables estan en variables.tf; las salidas en outputs.tf.
+# ==============================================================================================
+
 # ── Data sources ──────────────────────────────────────────────────────────────
 data "aws_availability_zones" "available" {}
 data "aws_caller_identity" "current" {}
@@ -245,6 +252,7 @@ resource "aws_eks_addon" "ebs_csi" {
   depends_on = [aws_eks_node_group.this]
 }
 
+# ── Clave publica SSH para acceso a los nodos worker (usada por remote_access del node group) ─
 resource "aws_key_pair" "ssh_key_1" {
   key_name   = "ssh_key_1"
   public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPGUfodeyRFGnkjhA4qATLA89RWCQL+ke9xj779QARZk"
