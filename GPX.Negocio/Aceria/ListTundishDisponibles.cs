@@ -1,10 +1,19 @@
-﻿using GPX.Negocio.COP;
+using GPX.Negocio.COP;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
+// [GPX-DOC-v1] ================================================================================
+// Modelo de vista de un tundish disponible: horario, vida util, tipo de semielaborado, estandar
+// seleccionado, totales por tipo de BB y estado de cada boca.
+// ================================================================================================
+
 namespace GPX.Negocio.Aceria
 {
+    /// <summary>
+    /// Clase ListTundishDisponibles. Modelo de vista de un tundish disponible: horario, vida util, tipo de
+    /// semielaborado, estandar seleccionado, totales por tipo de BB y estado de cada boca.
+    /// </summary>
     public class ListTundishDisponibles
     {
 

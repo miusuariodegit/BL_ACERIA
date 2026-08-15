@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de Identity: confirmacion de correo electronico.
+   ========================================================================================== *@
 @page "/Account/ConfirmEmail"
 
 @using System.Text
@@ -31,6 +34,9 @@
     [SupplyParameterFromQuery]
     private string? Code { get; set; }
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         if(UserId is null || Code is null) {
             RedirectManager.RedirectTo("");

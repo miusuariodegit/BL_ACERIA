@@ -1,4 +1,4 @@
-﻿
+
 using GPX.Negocio.COP;
 using System;
 using System.Collections.Generic;
@@ -7,8 +7,17 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
+// [GPX-DOC-v1] ================================================================================
+// Registro de revision hornero: fabricacion, fecha/semana prevista de fin, orden de mezcla, sociedad,
+// maquina, estatus y material.
+// ================================================================================================
+
 namespace GPX.Negocio.ORM
 {
+    /// <summary>
+    /// Clase RevaHornero. Registro de revision hornero: fabricacion, fecha/semana prevista de fin, orden de
+    /// mezcla, sociedad, maquina, estatus y material.
+    /// </summary>
     public  class RevaHornero
     {
 

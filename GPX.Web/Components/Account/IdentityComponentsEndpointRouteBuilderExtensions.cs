@@ -12,9 +12,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Primitives;
 
+// [GPX-DOC-v1] ================================================================================
+// Registra los endpoints adicionales de Identity que no son componentes Razor (login, logout,
+// gestion).
+// ================================================================================================
+
 namespace Microsoft.AspNetCore.Routing {
+    /// <summary>
+    /// Clase IdentityComponentsEndpointRouteBuilderExtensions. Registra los endpoints adicionales de
+    /// Identity que no son componentes Razor (login, logout, gestion).
+    /// </summary>
     internal static class IdentityComponentsEndpointRouteBuilderExtensions {
         // These endpoints are required by the Identity Razor components defined in the /Components/Account/Pages directory of this project.
+        /// <summary>
+        /// Registra los endpoints adicionales de Identity que no son componentes Razor (login, logout,
+        /// gestion).
+        /// </summary>
         public static IEndpointConventionBuilder MapAdditionalIdentityEndpoints(this IEndpointRouteBuilder endpoints) {
             ArgumentNullException.ThrowIfNull(endpoints);
 

@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Ruta /gestion. Panel resumen (dashboard) del modulo de administracion.
+   ========================================================================================== *@
 @page "/gestion"
 @attribute [Authorize(Policy = "Module:ADMIN_OVERVIEW")]
 
@@ -76,6 +79,9 @@
 @code {
     GestionDashboardSummary? Summary;
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         Summary = await GestionManagerService.GetDashboardSummaryAsync();
     }

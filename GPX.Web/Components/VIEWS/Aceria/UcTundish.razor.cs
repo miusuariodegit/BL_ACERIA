@@ -3,8 +3,17 @@ using GPX.Negocio.ORM;
 using Microsoft.AspNetCore.Components;
 using System.Globalization;
 
+// [GPX-DOC-v1] ================================================================================
+// Codigo tras el control de usuario que representa un tundish individual: configuracion de bocas y
+// calculo de rendimiento.
+// ================================================================================================
+
 namespace GPX.Web.Components.VIEWS.Aceria;
 
+/// <summary>
+/// Clase UcTundish. Codigo tras el control de usuario que representa un tundish individual:
+/// configuracion de bocas y calculo de rendimiento.
+/// </summary>
 public partial class UcTundish : ComponentBase
 {
     [Parameter] public int Numero { get; set; }
@@ -25,6 +34,9 @@ public partial class UcTundish : ComponentBase
         new("Bloqueada/Perforada", "BLOQUEDA/PERFORADA")
     ];
 
+    /// <summary>
+    /// On Parameters Set.
+    /// </summary>
     protected override void OnParametersSet()
     {
         if (Tundish is null)
@@ -42,6 +54,9 @@ public partial class UcTundish : ComponentBase
         CargarConfiguracionRendimiento(Tundish.EstandardSeleccionado ?? EstandarSeleccionado);
     }
 
+    /// <summary>
+    /// On Standard Changed.
+    /// </summary>
     protected async Task OnStandardChanged(int? id)
     {
         if (Tundish is null)
@@ -59,6 +74,9 @@ public partial class UcTundish : ComponentBase
         await NotifyChanged();
     }
 
+    /// <summary>
+    /// On Activo Changed.
+    /// </summary>
     protected async Task OnActivoChanged(bool value)
     {
         if (Tundish is null)
@@ -69,6 +87,9 @@ public partial class UcTundish : ComponentBase
         await NotifyChanged();
     }
 
+    /// <summary>
+    /// On Estado Boca Changed.
+    /// </summary>
     protected async Task OnEstadoBocaChanged(int numeroBoca, string estatusBoca)
     {
         if (Tundish is null)
@@ -80,6 +101,9 @@ public partial class UcTundish : ComponentBase
         await NotifyChanged();
     }
 
+    /// <summary>
+    /// Cargar Configuracion Rendimiento.
+    /// </summary>
     public void CargarConfiguracionRendimiento(ListTundishStandard? tundishEstandar)
     {
         if (Tundish is null || tundishEstandar is null || ListaConfiguracionAceria.Count == 0)
@@ -129,6 +153,9 @@ public partial class UcTundish : ComponentBase
             Tundish.NumColadas = 0;
     }
 
+    /// <summary>
+    /// Get Boca.
+    /// </summary>
     protected BocaView GetBoca(int numeroBoca)
     {
         if (Tundish is null)
@@ -146,6 +173,9 @@ public partial class UcTundish : ComponentBase
         };
     }
 
+    /// <summary>
+    /// Get Estado Color.
+    /// </summary>
     protected static string GetEstadoColor(string? estado) => estado switch
     {
         "ABIERTA" => "#31b404",
@@ -154,6 +184,9 @@ public partial class UcTundish : ComponentBase
         _ => "#e5e7eb"
     };
 
+    /// <summary>
+    /// Get Tipo Class.
+    /// </summary>
     protected static string GetTipoClass(string? tipo) => tipo?.Trim().ToUpperInvariant() switch
     {
         "BB1" => "bb1",
@@ -162,8 +195,14 @@ public partial class UcTundish : ComponentBase
         _ => string.Empty
     };
 
+    /// <summary>
+    /// Format Number.
+    /// </summary>
     protected static string FormatNumber(decimal? value) => (value ?? 0).ToString("N2", CultureInfo.CurrentCulture);
 
+    /// <summary>
+    /// Cargar Datos Estandar.
+    /// </summary>
     private void CargarDatosEstandar(ListTundishStandard tundishEstandar)
     {
         if (Tundish is null)
@@ -188,6 +227,9 @@ public partial class UcTundish : ComponentBase
         Tundish.tstotalBB3 = tundishEstandar.tstotalBB3;
     }
 
+    /// <summary>
+    /// Configurar Boca.
+    /// </summary>
     private static void ConfigurarBoca(ListTundishDisponibles tundish, string idTipoBB, string estatusBoca, int numeroBoca)
     {
         var estatusAnterior = ObtenerStatusBocaActual(tundish, numeroBoca);
@@ -211,6 +253,9 @@ public partial class UcTundish : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Ajustar Total.
+    /// </summary>
     private static void AjustarTotal(string idTipoBB, ListTundishDisponibles tundish, int delta)
     {
         switch (idTipoBB)
@@ -227,6 +272,9 @@ public partial class UcTundish : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Obtener Status Boca Actual.
+    /// </summary>
     private static string ObtenerStatusBocaActual(ListTundishDisponibles tundish, int numeroBoca) => numeroBoca switch
     {
         1 => tundish.StatusBoca1,
@@ -238,6 +286,9 @@ public partial class UcTundish : ComponentBase
         _ => string.Empty
     };
 
+    /// <summary>
+    /// Asignar Status Boca.
+    /// </summary>
     private static void AsignarStatusBoca(ListTundishDisponibles tundish, int numeroBoca, string nuevoStatus)
     {
         switch (numeroBoca)
@@ -251,6 +302,9 @@ public partial class UcTundish : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Notify Changed.
+    /// </summary>
     private async Task NotifyChanged()
     {
         if (Tundish is not null && TundishChanged.HasDelegate)

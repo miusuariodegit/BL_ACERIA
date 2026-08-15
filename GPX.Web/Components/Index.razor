@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Ruta /. Redirige segun el estado de autenticacion del usuario.
+   ========================================================================================== *@
 @page "/"
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -17,11 +20,17 @@
 @code {
     private bool isAuthenticated;
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         isAuthenticated = authenticationState.User.Identity?.IsAuthenticated == true;
     }
 
+    /// <summary>
+    /// On After Render.
+    /// </summary>
     protected override void OnAfterRender(bool firstRender) {
         if(firstRender && !isAuthenticated) {
             NavigationManager.NavigateTo("/Account/Login", true);

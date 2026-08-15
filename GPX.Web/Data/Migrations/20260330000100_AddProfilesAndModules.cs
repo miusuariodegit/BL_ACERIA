@@ -1,12 +1,23 @@
 using GPX.Web.Data;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+// [GPX-DOC-v1] ================================================================================
+// Migracion que anade las tablas AppProfiles, AppModules y AppProfileModules.
+// ================================================================================================
+
 #nullable disable
 
 namespace GPX.Web.Migrations {
     [Microsoft.EntityFrameworkCore.Infrastructure.DbContext(typeof(ApplicationDbContext))]
     [Migration("20260330000100_AddProfilesAndModules")]
+    /// <summary>
+    /// Clase AddProfilesAndModules. Migracion que anade las tablas AppProfiles, AppModules y
+    /// AppProfileModules.
+    /// </summary>
     public partial class AddProfilesAndModules : Migration {
+        /// <summary>
+        /// Up.
+        /// </summary>
         protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.CreateTable(
                 name: "AppModules",
@@ -110,6 +121,9 @@ namespace GPX.Web.Migrations {
                 onDelete: ReferentialAction.Restrict);
         }
 
+        /// <summary>
+        /// Down.
+        /// </summary>
         protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropForeignKey(
                 name: "FK_AspNetUsers_AppProfiles_ProfileId",

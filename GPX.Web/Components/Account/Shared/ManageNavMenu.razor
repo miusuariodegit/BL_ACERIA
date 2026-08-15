@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Menu de navegacion de las paginas de gestion de cuenta.
+   ========================================================================================== *@
 @using Microsoft.AspNetCore.Identity
 @using GPX.Web.Data
 
@@ -20,6 +23,9 @@
 
     int ActiveTabIndex { get; set; } = 0;
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
         if(NavigationManager.Uri.Contains("Account/Manage/Email")) ActiveTabIndex = 1;

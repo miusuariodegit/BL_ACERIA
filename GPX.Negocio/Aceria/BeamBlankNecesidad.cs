@@ -1,9 +1,18 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
+// [GPX-DOC-v1] ================================================================================
+// DTO con la necesidad de beam blank por orden de fabricacion: sociedad, maquina, material, calidad,
+// longitud, toneladas/unidades a fabricar y fechas de prevision.
+// ================================================================================================
+
 namespace GPX.Negocio.Aceria
 {
+    /// <summary>
+    /// Clase BeamBlankNecesidad. DTO con la necesidad de beam blank por orden de fabricacion: sociedad,
+    /// maquina, material, calidad, longitud, toneladas/unidades a fabricar y fechas de prevision.
+    /// </summary>
     public class BeamBlankNecesidad
     {
 

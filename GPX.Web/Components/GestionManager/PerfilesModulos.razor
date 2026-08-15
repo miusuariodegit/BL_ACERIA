@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Ruta /gestion/perfiles-modulos. Asignacion de modulos visibles a cada perfil.
+   ========================================================================================== *@
 @page "/gestion/perfiles-modulos"
 @attribute [Authorize(Policy = "Module:ADMIN_PROFILE_MODULES")]
 
@@ -116,6 +119,9 @@
     IReadOnlyList<GestionProfileModuleGroup> GroupedModules = [];
     int SelectedModulesCount => Editor.Modules.Count(module => module.IsSelected);
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         Profiles = await GestionManagerService.GetProfileOptionsAsync();
         await LoadProfileAsync(Profiles.FirstOrDefault()?.Id);

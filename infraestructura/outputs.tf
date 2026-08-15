@@ -1,3 +1,9 @@
+# [GPX-DOC-v1] ==========================================================================================
+# Salidas del modulo Terraform: datos del cluster EKS (nombre, endpoint, version, certificado),
+# el rol IAM del driver CSI de EBS y las IPs de nodos/API, utiles para configurar kubectl y para
+# diagnostico de red tras el aprovisionamiento.
+# ==============================================================================================
+
 output "cluster_name" {
   value = aws_eks_cluster.this.name
 }

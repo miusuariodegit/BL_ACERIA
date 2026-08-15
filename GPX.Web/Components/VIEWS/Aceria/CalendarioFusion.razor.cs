@@ -1,4 +1,4 @@
-﻿using DevExpress.Blazor;
+using DevExpress.Blazor;
 using GPX.Negocio.Aceria;
 using GPX.Negocio.CRUD;
 using GPX.Negocio.ORM;
@@ -6,8 +6,17 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Globalization;
 
+// [GPX-DOC-v1] ================================================================================
+// Codigo tras la vista de calendario de fusion de horno: catalogos, consulta/edicion del calendario,
+// validacion, carga masiva y exportacion.
+// ================================================================================================
+
 namespace GPX.Web.Components.VIEWS.Aceria;
 
+/// <summary>
+/// Clase CalendarioFusion. Codigo tras la vista de calendario de fusion de horno: catalogos,
+/// consulta/edicion del calendario, validacion, carga masiva y exportacion.
+/// </summary>
 public partial class CalendarioFusion : ComponentBase
 {
     [Inject] protected IDialogService DialogService { get; set; } = default!;
@@ -40,12 +49,18 @@ public partial class CalendarioFusion : ComponentBase
         .Select(x => new HoraCalendario(x, $"{x}hrs", $"cafHora{x}", $"TipoSemiHora{x}"))
         .ToList();
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
         await CargaCatalogosAsync();
         //await CargarDataAsync();
     }
 
+    /// <summary>
+    /// Carga Catalogos (operacion asincrona).
+    /// </summary>
     protected async Task CargaCatalogosAsync()
     {
         // TODO BD:
@@ -53,6 +68,9 @@ public partial class CalendarioFusion : ComponentBase
         //await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// On Consultar Click.
+    /// </summary>
     protected async Task OnConsultarClick()
     {
         IsLoading = true;
@@ -64,6 +82,9 @@ public partial class CalendarioFusion : ComponentBase
         await InvokeAsync(StateHasChanged);
     }
 
+    /// <summary>
+    /// Cargar Data (operacion asincrona).
+    /// </summary>
     protected async Task CargarDataAsync()
     {
         // TODO BD:
@@ -73,6 +94,9 @@ public partial class CalendarioFusion : ComponentBase
 
 
 
+    /// <summary>
+    /// On Edit Model Saving.
+    /// </summary>
     protected async Task OnEditModelSaving(GridEditModelSavingEventArgs e)
     {
         var edit = (CalendarioFusionHorno)e.EditModel;
@@ -101,6 +125,9 @@ public partial class CalendarioFusion : ComponentBase
         await CargarDataAsync();
     }
 
+    /// <summary>
+    /// Validar Registro.
+    /// </summary>
     protected List<string> ValidarRegistro(CalendarioFusionHorno item)
     {
         var errores = new List<string>();
@@ -114,6 +141,9 @@ public partial class CalendarioFusion : ComponentBase
         return errores;
     }
 
+    /// <summary>
+    /// Limpiar Tipos Sin Hora Activa.
+    /// </summary>
     protected void LimpiarTiposSinHoraActiva(CalendarioFusionHorno item)
     {
         for (var i = 1; i <= 24; i++)
@@ -123,12 +153,18 @@ public partial class CalendarioFusion : ComponentBase
         }
     }
 
+    /// <summary>
+    /// On Grid Customize Element.
+    /// </summary>
     protected void OnGridCustomizeElement(GridCustomizeElementEventArgs e)
     {
         // Estilo badge: el coloreado se hace dentro del CellDisplayTemplate con .grid-badge
         // ya no se pinta la celda completa.
     }
 
+    /// <summary>
+    /// Get Tipo Css.
+    /// </summary>
     protected string GetTipoCss(string? tipo, bool activo)
     {
         if (!activo) return "hora-inactiva";
@@ -142,6 +178,9 @@ public partial class CalendarioFusion : ComponentBase
         };
     }
 
+    /// <summary>
+    /// On Abrir Cambio Tundish.
+    /// </summary>
     protected async Task OnAbrirCambioTundish()
     {
         CambioFechaInicio = DateTime.Now;
@@ -151,12 +190,18 @@ public partial class CalendarioFusion : ComponentBase
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// On Abrir Carga Calendario.
+    /// </summary>
     protected void OnAbrirCargaCalendario()
     {
         ArchivoCalendario = null;
         PopupCargaVisible = true;
     }
 
+    /// <summary>
+    /// On Abrir Listado Tundish.
+    /// </summary>
     protected async Task OnAbrirListadoTundish()
     {
         IsLoading = true;
@@ -168,6 +213,9 @@ public partial class CalendarioFusion : ComponentBase
         PopupListadoTundishVisible = true;
     }
 
+    /// <summary>
+    /// On Guardar Cambio Tundish.
+    /// </summary>
     protected async Task OnGuardarCambioTundish()
     {
         if (CambioFechaInicio > CambioFechaFin)
@@ -216,11 +264,17 @@ public partial class CalendarioFusion : ComponentBase
         await CargarDataAsync();
     }
 
+    /// <summary>
+    /// On Archivo Seleccionado.
+    /// </summary>
     protected void OnArchivoSeleccionado(InputFileChangeEventArgs e)
     {
         ArchivoCalendario = e.File;
     }
 
+    /// <summary>
+    /// On Procesar Archivo Calendario.
+    /// </summary>
     protected async Task OnProcesarArchivoCalendario()
     {
         if (ArchivoCalendario is null)
@@ -314,6 +368,9 @@ public partial class CalendarioFusion : ComponentBase
         await CargarDataAsync();
     }
 
+    /// <summary>
+    /// Cargar Listado Tundish (operacion asincrona).
+    /// </summary>
     protected async Task CargarListadoTundishAsync()
     {
         var inicio = DateTime.Now.Date;
@@ -339,6 +396,9 @@ public partial class CalendarioFusion : ComponentBase
 
 
 
+    /// <summary>
+    /// On Tundish Edit Model Saving.
+    /// </summary>
     protected async Task OnTundishEditModelSaving(GridEditModelSavingEventArgs e)
     {
         var item = (ListTundishDisponibles)e.EditModel;
@@ -381,21 +441,39 @@ public partial class CalendarioFusion : ComponentBase
         await CargarDataAsync();
     }
 
+    /// <summary>
+    /// On Column Chooser Item Click.
+    /// </summary>
     protected void OnColumnChooserItemClick(ToolbarItemClickEventArgs e)
         => GridCalendario?.ShowColumnChooser();
 
+    /// <summary>
+    /// Export All Data To Excel.
+    /// </summary>
     protected Task ExportAllDataToExcel()
         => GridCalendario?.ExportToXlsxAsync("CalendarioFusionHorno") ?? Task.CompletedTask;
 
+    /// <summary>
+    /// Export All Data To Csv.
+    /// </summary>
     protected Task ExportAllDataToCsv()
         => GridCalendario?.ExportToCsvAsync("CalendarioFusionHorno") ?? Task.CompletedTask;
 
+    /// <summary>
+    /// Export All Data To Pdf.
+    /// </summary>
     protected Task ExportAllDataToPdf()
         => GridCalendario?.ExportToPdfAsync("CalendarioFusionHorno") ?? Task.CompletedTask;
 
+    /// <summary>
+    /// Get Hora Activa.
+    /// </summary>
     protected static bool GetHoraActiva(CalendarioFusionHorno item, int hora)
         => item.GetType().GetProperty($"cafHora{hora}")?.GetValue(item) is bool value && value;
 
+    /// <summary>
+    /// Get Tipo Semi.
+    /// </summary>
     protected static string GetTipoSemi(CalendarioFusionHorno item, int hora)
     {
         var TipoSemi = item.GetType().GetProperty($"TipoSemiHora{hora}")?.GetValue(item).ToString();
@@ -408,12 +486,22 @@ public partial class CalendarioFusion : ComponentBase
     }
     
 
+    /// <summary>
+    /// Set Hora Activa.
+    /// </summary>
     protected static void SetHoraActiva(CalendarioFusionHorno item, int hora, bool value)
         => item.GetType().GetProperty($"cafHora{hora}")?.SetValue(item, value);
 
+    /// <summary>
+    /// Set Tipo Semi.
+    /// </summary>
     protected static void SetTipoSemi(CalendarioFusionHorno item, int hora, string? value)
         => item.GetType().GetProperty($"TipoSemiHora{hora}")?.SetValue(item, value ?? string.Empty);
 
+    /// <summary>
+    /// Registro HoraCalendario. Codigo tras la vista de calendario de fusion de horno: catalogos,
+    /// consulta/edicion del calendario, validacion, carga masiva y exportacion.
+    /// </summary>
     protected sealed record HoraCalendario(int Numero, string Caption, string CampoHora, string CampoTipo);
 
 }

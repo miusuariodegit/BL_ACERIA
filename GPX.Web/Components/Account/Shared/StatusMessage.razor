@@ -1,4 +1,7 @@
-﻿@if(!string.IsNullOrEmpty(DisplayMessage)) {
+@* [GPX-DOC-v1] ======================================================================
+   Componente que muestra mensajes de estado (exito/error) tras operaciones de cuenta.
+   ========================================================================================== *@
+@if(!string.IsNullOrEmpty(DisplayMessage)) {
     var statusMessageClass = DisplayMessage.StartsWith("Error") ? "danger" : "success";
     <div class="alert alert-@statusMessageClass" role="alert">
         @DisplayMessage
@@ -16,6 +19,9 @@
 
     private string? DisplayMessage => Message ?? messageFromCookie;
 
+    /// <summary>
+    /// On Initialized.
+    /// </summary>
     protected override void OnInitialized() {
         messageFromCookie = HttpContext.Request.Cookies[IdentityRedirectManager.StatusCookieName];
 

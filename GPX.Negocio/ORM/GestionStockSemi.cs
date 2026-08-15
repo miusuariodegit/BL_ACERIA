@@ -1,9 +1,18 @@
-﻿
+
 using GPX.Negocio.COP;
 using System;
 
+// [GPX-DOC-v1] ================================================================================
+// Movimiento de stock de semielaborado: tipo de operacion, toneladas y unidades
+// brutas/stock/asignadas/libres.
+// ================================================================================================
+
 namespace GPX.Negocio.ORM
 {
+    /// <summary>
+    /// Clase GestionStockSemi. Movimiento de stock de semielaborado: tipo de operacion, toneladas y
+    /// unidades brutas/stock/asignadas/libres.
+    /// </summary>
     public class GestionStockSemi
     {
         public long geId { get; set; } = 0;

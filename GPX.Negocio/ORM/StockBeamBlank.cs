@@ -1,11 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// [GPX-DOC-v1] ================================================================================
+// Stock agregado de beam blank: teorico, real, asignado y libre, en toneladas y unidades.
+// ================================================================================================
+
 namespace GPX.Negocio.ORM
 {
+    /// <summary>
+    /// Clase StockBeamBlank. Stock agregado de beam blank: teorico, real, asignado y libre, en toneladas y
+    /// unidades.
+    /// </summary>
     public class StockBeamBlank
     {
         public int st_IdRegistro { get; set; } = 0;

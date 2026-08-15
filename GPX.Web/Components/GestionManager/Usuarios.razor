@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Ruta /gestion/usuarios. Alta, edicion y listado de usuarios.
+   ========================================================================================== *@
 @page "/gestion/usuarios"
 @attribute [Authorize(Policy = "Module:ADMIN_USERS")]
 
@@ -134,6 +137,9 @@
     IReadOnlyList<AppProfile> ProfileOptions = [];
     GestionUserEditor UserEditor = new();
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         await ReloadAsync();
     }

@@ -1,11 +1,20 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// [GPX-DOC-v1] ================================================================================
+// Parametros de configuracion de una aceria por sociedad/maquina: tiempos de colada, vida util de
+// tundish, pesos y velocidades por tipo de BB, limites de calidades estandar.
+// ================================================================================================
+
 namespace GPX.Negocio.ORM
 {
+    /// <summary>
+    /// Clase ConfiguracionAceria. Parametros de configuracion de una aceria por sociedad/maquina: tiempos
+    /// de colada, vida util de tundish, pesos y velocidades por tipo de BB, limites de calidades estandar.
+    /// </summary>
     public class ConfiguracionAceria
     {
         public int caId { get; set; }  

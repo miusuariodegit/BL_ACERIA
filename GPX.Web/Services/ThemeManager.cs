@@ -5,7 +5,14 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Configuration;
 using Microsoft.JSInterop;
 
+// [GPX-DOC-v1] ================================================================================
+// Gestiona el tema claro/oscuro de la interfaz y su persistencia.
+// ================================================================================================
+
 namespace GPX.Web.Services {
+    /// <summary>
+    /// Clase ThemeManager. Gestiona el tema claro/oscuro de la interfaz y su persistencia.
+    /// </summary>
     public class ThemeManager {
         private const string IsDarkThemeCookieKey = "is-dark-theme";
         private const string DefaultPresetColor = nameof(ThemeFluentAccentColor.Blue);
@@ -16,6 +23,9 @@ namespace GPX.Web.Services {
         private readonly PersistingComponentStateSubscription? _subscription;
         private readonly IThemeChangeService _themeService;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase ThemeManager.
+        /// </summary>
         public ThemeManager(
             IConfiguration configuration,
             ModuleLoader moduleLoader,
@@ -42,6 +52,9 @@ namespace GPX.Web.Services {
         public string CurrentPresetColor => _accentColor.ToString();
         public ITheme CurrentTheme => CreateTheme(IsDarkTheme);
 
+        /// <summary>
+        /// Alterna entre el tema claro y oscuro y persiste la preferencia.
+        /// </summary>
         public async Task ToggleThemeAsync() {
             IsDarkTheme = !IsDarkTheme;
             if(await _themeService.SetTheme(CurrentTheme)) {
@@ -53,6 +66,9 @@ namespace GPX.Web.Services {
             }
         }
 
+        /// <summary>
+        /// Obtiene el tema actual a partir de las preferencias almacenadas.
+        /// </summary>
         public void ObtainTheme(IEnumerable<KeyValuePairSerializer<string, string>>? cookie) {
             var record = cookie?.FirstOrDefault(entry => entry.Key == IsDarkThemeCookieKey)?.ToKeyValuePair;
             if(record.HasValue && bool.TryParse(record.Value.Value, out var isDarkTheme)) {
@@ -60,6 +76,9 @@ namespace GPX.Web.Services {
             }
         }
 
+        /// <summary>
+        /// Create Theme.
+        /// </summary>
         private ITheme CreateTheme(bool isDarkTheme) =>
             Themes.Fluent.Clone(properties => {
                 properties.Name = isDarkTheme
@@ -70,6 +89,9 @@ namespace GPX.Web.Services {
                 properties.ApplyToPageElements = true;
             });
 
+        /// <summary>
+        /// Resolve Accent Color.
+        /// </summary>
         private static ThemeFluentAccentColor ResolveAccentColor(string? presetColor) =>
             Enum.TryParse<ThemeFluentAccentColor>(presetColor, true, out var parsedColor)
                 ? parsedColor

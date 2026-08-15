@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Pagina de gestion de cuenta: configuracion de aplicacion autenticadora (2FA).
+   ========================================================================================== *@
 @page "/Account/Manage/EnableAuthenticator"
 
 @using System.ComponentModel.DataAnnotations
@@ -80,12 +83,18 @@
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
 
         await LoadSharedKeyAndQrCodeUriAsync(user);
     }
 
+    /// <summary>
+    /// On Valid Submit (operacion asincrona).
+    /// </summary>
     private async Task OnValidSubmitAsync() {
         // Strip spaces and hyphens
         var verificationCode = Input.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
@@ -111,6 +120,9 @@
         }
     }
 
+    /// <summary>
+    /// Load Shared Key And Qr Code Uri (operacion asincrona).
+    /// </summary>
     private async ValueTask LoadSharedKeyAndQrCodeUriAsync(ApplicationUser user) {
         // Load the authenticator key & QR code URI to display on the form
         var unformattedKey = await UserManager.GetAuthenticatorKeyAsync(user);
@@ -125,6 +137,9 @@
         authenticatorUri = GenerateQrCodeUri(email!, unformattedKey!);
     }
 
+    /// <summary>
+    /// Format Key.
+    /// </summary>
     private string FormatKey(string unformattedKey) {
         var result = new StringBuilder();
         int currentPosition = 0;
@@ -139,6 +154,9 @@
         return result.ToString().ToLowerInvariant();
     }
 
+    /// <summary>
+    /// Generate Qr Code Uri.
+    /// </summary>
     private string GenerateQrCodeUri(string email, string unformattedKey) {
         return string.Format(
             CultureInfo.InvariantCulture,

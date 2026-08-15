@@ -3,11 +3,23 @@ using GPX.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
+// [GPX-DOC-v1] ================================================================================
+// Resuelve que modulos puede ver un usuario autenticado segun su perfil, para la navegacion y el
+// control de acceso.
+// ================================================================================================
+
 namespace GPX.Web.Services {
+    /// <summary>
+    /// Clase ModuleAccessService. Resuelve que modulos puede ver un usuario autenticado segun su perfil,
+    /// para la navegacion y el control de acceso.
+    /// </summary>
     public class ModuleAccessService {
         private readonly ApplicationDbContext _dbContext;
         private readonly bool _showHomePage;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase ModuleAccessService.
+        /// </summary>
         public ModuleAccessService(ApplicationDbContext dbContext, IConfiguration configuration) {
             _dbContext = dbContext;
             _showHomePage = configuration.GetValue("Navigation:ShowHomePage", true);
@@ -15,6 +27,9 @@ namespace GPX.Web.Services {
 
         public bool ShowHomePage => _showHomePage;
 
+        /// <summary>
+        /// Obtiene los modulos a los que tiene acceso el usuario autenticado.
+        /// </summary>
         public async Task<IReadOnlyList<ModuleDefinition>> GetAllowedModulesAsync(ClaimsPrincipal user) {
             if(user.Identity?.IsAuthenticated != true) {
                 return [];
@@ -43,6 +58,9 @@ namespace GPX.Web.Services {
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Obtiene los modulos permitidos agrupados por modulo padre para el menu de navegacion.
+        /// </summary>
         public async Task<IReadOnlyList<ModuleGroupItem>> GetAllowedModuleGroupsAsync(ClaimsPrincipal user) {
             var allowedModules = await GetAllowedModulesAsync(user);
             return allowedModules
@@ -58,6 +76,9 @@ namespace GPX.Web.Services {
                 .ToList();
         }
 
+        /// <summary>
+        /// Resuelve el nombre visible de un modulo a partir de su ruta.
+        /// </summary>
         public string ResolveModuleName(string route, IReadOnlyList<ModuleDefinition> visibleModules) {
             var normalizedRoute = route.Trim('/');
             return visibleModules.FirstOrDefault(module =>
@@ -66,15 +87,25 @@ namespace GPX.Web.Services {
                 ?? normalizedRoute;
         }
 
+        /// <summary>
+        /// Obtiene el nombre del perfil del usuario autenticado.
+        /// </summary>
         public string GetProfileName(ClaimsPrincipal user) =>
             user.FindFirst(AppClaimTypes.Profile)?.Value ?? "Sin perfil";
 
+        /// <summary>
+        /// Obtiene el nombre para mostrar del usuario autenticado.
+        /// </summary>
         public string GetDisplayName(ClaimsPrincipal user) =>
             user.FindFirst(ClaimTypes.Name)?.Value
             ?? user.FindFirst(ClaimTypes.Email)?.Value
             ?? "Usuario";
     }
 
+    /// <summary>
+    /// Registro ModuleGroupItem. Resuelve que modulos puede ver un usuario autenticado segun su perfil,
+    /// para la navegacion y el control de acceso.
+    /// </summary>
     public sealed record ModuleGroupItem(
         ModuleGroupDefinition Group,
         IReadOnlyList<ModuleDefinition> Modules);

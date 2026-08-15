@@ -5,6 +5,9 @@ GO
 SET XACT_ABORT ON;
 GO
 
+-- [GPX-DOC-v1] Script T-SQL idempotente que recrea el esquema de ASP.NET Core Identity y las
+-- tablas propias de navegacion (AppProfiles/AppModules/AppProfileModules), y siembra los datos
+-- minimos para el primer arranque de la aplicacion (perfil, modulo, rol, usuario y claim iniciales).
 /*
 Script base GPX
 - Recrea toda la estructura necesaria para ASP.NET Core Identity + GPX

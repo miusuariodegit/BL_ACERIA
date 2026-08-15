@@ -12,6 +12,12 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 
+// [GPX-DOC-v1] ================================================================================
+// Punto de entrada de la aplicacion Blazor Server: configuracion de servicios, autenticacion (cookie +
+// SSO Microsoft 365 opcional), Entity Framework Core, autorizacion dinamica por modulos y pipeline
+// HTTP.
+// ================================================================================================
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()

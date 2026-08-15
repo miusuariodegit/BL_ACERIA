@@ -1,4 +1,13 @@
 namespace GPX.Web.Data {
+
+// [GPX-DOC-v1] ================================================================================
+// Entidad de modulo de navegacion/funcionalidad: codigo, nombre, ruta, icono, modulo padre y orden de
+// visualizacion.
+// ================================================================================================
+    /// <summary>
+    /// Clase AppModule. Entidad de modulo de navegacion/funcionalidad: codigo, nombre, ruta, icono, modulo
+    /// padre y orden de visualizacion.
+    /// </summary>
     public class AppModule {
         public int Id { get; set; }
         public string Code { get; set; } = string.Empty;

@@ -1,4 +1,4 @@
-﻿
+
 
 using DevExpress.Blazor;
 using Microsoft.AspNetCore.Authorization;
@@ -8,8 +8,17 @@ using GPX.Negocio.Aceria;
 using GPX.Negocio.ORM;
 using GPX.Negocio.COP;
 
+// [GPX-DOC-v1] ================================================================================
+// Codigo tras la vista de necesidades de aceria (beam blank): catalogos, consulta, detalle por orden y
+// exportacion.
+// ================================================================================================
+
 namespace GPX.Web.Components.VIEWS.Aceria;
 
+/// <summary>
+/// Clase NecesidadAceria. Codigo tras la vista de necesidades de aceria (beam blank): catalogos,
+/// consulta, detalle por orden y exportacion.
+/// </summary>
 public partial class NecesidadAceria : ComponentBase
 {
     [Inject] protected AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
@@ -33,12 +42,18 @@ public partial class NecesidadAceria : ComponentBase
     protected IGrid? gvNececiadesAceria { get; set; }
     protected string? SearchText { get; set; }
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
         await CargaCatalogosAsync();
         await base.OnInitializedAsync();
     }
 
+    /// <summary>
+    /// Carga Catalogos (operacion asincrona).
+    /// </summary>
     protected async Task CargaCatalogosAsync()
     {
         ListaCentros = await CrudRepository.ConsultaCentrosXsociedadAsync();
@@ -47,6 +62,9 @@ public partial class NecesidadAceria : ComponentBase
             .ToList();
     }
 
+    /// <summary>
+    /// On Consultar Click.
+    /// </summary>
     protected async Task OnConsultarClick()
     {
         IsLoading = true;
@@ -58,6 +76,9 @@ public partial class NecesidadAceria : ComponentBase
         await InvokeAsync(StateHasChanged);
     }
 
+    /// <summary>
+    /// Cargar Data (operacion asincrona).
+    /// </summary>
     protected async Task CargarDataAsync()
     {
         ListaNecesidadesBeamBlanksAgrupago = new();
@@ -124,9 +145,15 @@ public partial class NecesidadAceria : ComponentBase
             .ToList();
     }
 
+    /// <summary>
+    /// Convertir Semana A Orden.
+    /// </summary>
     protected int ConvertirSemanaAOrden(string? semanaPrevIni)
         => int.TryParse(semanaPrevIni, out var n) ? n : int.MaxValue;
 
+    /// <summary>
+    /// Obtener Detalle.
+    /// </summary>
     protected List<BeamBlankNecesidad> ObtenerDetalle(BeamBlankNecesidad master)
     {
         return ListaNecesidadesBeamBlanks?
@@ -171,15 +198,27 @@ public partial class NecesidadAceria : ComponentBase
 
 
 
+    /// <summary>
+    /// On Column Chooser Item Click.
+    /// </summary>
     protected void OnColumnChooserItemClick(ToolbarItemClickEventArgs e)
         => gvNececiadesAceria?.ShowColumnChooser();
 
+    /// <summary>
+    /// Export All Data To Excel.
+    /// </summary>
     protected Task ExportAllDataToExcel()
         => gvNececiadesAceria?.ExportToXlsxAsync("NecesidadesAceria") ?? Task.CompletedTask;
 
+    /// <summary>
+    /// Export All Data To Csv.
+    /// </summary>
     protected Task ExportAllDataToCsv()
         => gvNececiadesAceria?.ExportToCsvAsync("NecesidadesAceria") ?? Task.CompletedTask;
 
+    /// <summary>
+    /// Export All Data To Pdf.
+    /// </summary>
     protected Task ExportAllDataToPdf()
         => gvNececiadesAceria?.ExportToPdfAsync("NecesidadesAceria") ?? Task.CompletedTask;
 

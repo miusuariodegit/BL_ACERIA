@@ -1,12 +1,24 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+// [GPX-DOC-v1] ================================================================================
+// DbContext de EF Core que extiende IdentityDbContext con las entidades ApplicationUser, AppProfile,
+// AppModule y AppProfileModule.
+// ================================================================================================
+
 namespace GPX.Web.Data {
+    /// <summary>
+    /// Clase ApplicationDbContext. DbContext de EF Core que extiende IdentityDbContext con las entidades
+    /// ApplicationUser, AppProfile, AppModule y AppProfileModule.
+    /// </summary>
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options) {
         public DbSet<AppProfile> Profiles => Set<AppProfile>();
         public DbSet<AppModule> Modules => Set<AppModule>();
         public DbSet<AppProfileModule> ProfileModules => Set<AppProfileModule>();
 
+        /// <summary>
+        /// On Model Creating.
+        /// </summary>
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
 

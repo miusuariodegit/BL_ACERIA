@@ -6,8 +6,17 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Text.Json;
 
+// [GPX-DOC-v1] ================================================================================
+// Codigo tras la vista de listado de versiones de tundish: consulta, activacion y generacion de
+// version de corte.
+// ================================================================================================
+
 namespace GPX.Web.Components.VIEWS.Aceria
 {
+    /// <summary>
+    /// Clase ListadoDeVersiones. Codigo tras la vista de listado de versiones de tundish: consulta,
+    /// activacion y generacion de version de corte.
+    /// </summary>
     public partial class ListadoDeVersiones : ComponentBase
     {
 
@@ -46,6 +55,9 @@ namespace GPX.Web.Components.VIEWS.Aceria
 
         // CICLO DE VIDA BLAZOR
 
+        /// <summary>
+        /// On Initialized (operacion asincrona).
+        /// </summary>
         protected override async Task OnInitializedAsync()
         {
             //await CargaCatalogosAsync();
@@ -56,6 +68,9 @@ namespace GPX.Web.Components.VIEWS.Aceria
 
         // CARGA DE DATOS
 
+        /// <summary>
+        /// Get Calidad Class.
+        /// </summary>
         private string GetCalidadClass(string calidad)
         {
             return calidad?.Trim().ToUpper() switch
@@ -71,6 +86,9 @@ namespace GPX.Web.Components.VIEWS.Aceria
             };
         }
 
+        /// <summary>
+        /// Limpieza.
+        /// </summary>
         protected void Limpieza()
         {
             ListaVersionesTundish = new List<ConfiguracionTundishControl>();
@@ -80,6 +98,9 @@ namespace GPX.Web.Components.VIEWS.Aceria
 
         // EVENTOS UI
 
+        /// <summary>
+        /// On Consultar Click.
+        /// </summary>
         protected async Task OnConsultarClick()
         {
             IsLoading = true;
@@ -111,6 +132,9 @@ namespace GPX.Web.Components.VIEWS.Aceria
             await InvokeAsync(StateHasChanged);
         }
 
+        /// <summary>
+        /// On Activar Version Click.
+        /// </summary>
         protected async Task OnActivarVersionClick(ListadoVersionVm version)
         {
 
@@ -129,6 +153,9 @@ namespace GPX.Web.Components.VIEWS.Aceria
             });
         }
 
+        /// <summary>
+        /// On Generar Version Corte Click.
+        /// </summary>
         protected async Task OnGenerarVersionCorteClick(ListadoVersionVm version)
         {
             await DialogService.ConfirmAsync(new MessageBoxOptions
@@ -159,6 +186,9 @@ namespace GPX.Web.Components.VIEWS.Aceria
 
         // MÉTODOS AUXILIARES
 
+        /// <summary>
+        /// Show Alert (operacion asincrona).
+        /// </summary>
         private Task ShowAlertAsync(string title, string text, MessageBoxRenderStyle renderStyle)
         {
             return DialogService.AlertAsync(new MessageBoxOptions
@@ -172,6 +202,9 @@ namespace GPX.Web.Components.VIEWS.Aceria
 
         private static T? Deserialize<T>(string json) => string.IsNullOrWhiteSpace(json) ? default : JsonSerializer.Deserialize<T>(json, JsonOptions);
 
+        /// <summary>
+        /// Cargar Mock Versiones.
+        /// </summary>
         private void CargarMockVersiones()
         {
 
@@ -272,6 +305,10 @@ namespace GPX.Web.Components.VIEWS.Aceria
 
     }
 
+    /// <summary>
+    /// Clase VersionesPorNecesidadVm. Codigo tras la vista de listado de versiones de tundish: consulta,
+    /// activacion y generacion de version de corte.
+    /// </summary>
     public sealed class VersionesPorNecesidadVm
     {
         public DateTime FechaInicio { get; set; }

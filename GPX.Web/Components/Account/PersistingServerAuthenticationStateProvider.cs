@@ -8,8 +8,17 @@ using Microsoft.Extensions.Options;
 using GPX.Web;
 using GPX.Web.Data;
 
+// [GPX-DOC-v1] ================================================================================
+// Proveedor de estado de autenticacion que persiste el estado entre el render estatico y el
+// interactivo de Blazor Server.
+// ================================================================================================
+
 namespace GPX.Web.Components.Account {
     // This provider persists minimal user data for interactive rendering.
+    /// <summary>
+    /// Clase PersistingServerAuthenticationStateProvider. Proveedor de estado de autenticacion que persiste
+    /// el estado entre el render estatico y el interactivo de Blazor Server.
+    /// </summary>
     internal sealed class PersistingServerAuthenticationStateProvider : ServerAuthenticationStateProvider, IDisposable {
         private readonly PersistentComponentState state;
         private readonly IdentityOptions options;
@@ -18,6 +27,9 @@ namespace GPX.Web.Components.Account {
 
         private Task<AuthenticationState>? authenticationStateTask;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase PersistingServerAuthenticationStateProvider.
+        /// </summary>
         public PersistingServerAuthenticationStateProvider(
             PersistentComponentState persistentComponentState,
             IOptions<IdentityOptions> optionsAccessor) {
@@ -28,10 +40,16 @@ namespace GPX.Web.Components.Account {
             subscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveServer);
         }
 
+        /// <summary>
+        /// On Authentication State Changed.
+        /// </summary>
         private void OnAuthenticationStateChanged(Task<AuthenticationState> task) {
             authenticationStateTask = task;
         }
 
+        /// <summary>
+        /// On Persisting (operacion asincrona).
+        /// </summary>
         private async Task OnPersistingAsync() {
             if(authenticationStateTask is null) {
                 throw new UnreachableException($"Authentication state not set in {nameof(OnPersistingAsync)}().");
@@ -59,6 +77,9 @@ namespace GPX.Web.Components.Account {
             }
         }
 
+        /// <summary>
+        /// Libera la suscripcion a los cambios de estado de autenticacion.
+        /// </summary>
         public void Dispose() {
             subscription.Dispose();
             AuthenticationStateChanged -= OnAuthenticationStateChanged;

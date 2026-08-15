@@ -1,3 +1,9 @@
+# [GPX-DOC-v1] ==========================================================================================
+# Variables de entrada del modulo Terraform: parametrizan region, nombre y tamano del cluster EKS,
+# tipo de instancia de los nodos y acceso SSH. Los valores reales se pasan con -var en terraform apply
+# (ver infraestructura/Readme.md).
+# ==============================================================================================
+
 variable "region" {
   description = "AWS region"
   type        = string

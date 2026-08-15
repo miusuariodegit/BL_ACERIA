@@ -1,4 +1,4 @@
-﻿using DevExpress.Blazor;
+using DevExpress.Blazor;
 using DevExpress.Data.Automation.Text.Primitives.Models;
 using GPX.Negocio.Aceria;
 using GPX.Negocio.ORM;
@@ -6,8 +6,17 @@ using Microsoft.AspNetCore.Components;
 using System.Globalization;
 using System.Text.Json;
 
+// [GPX-DOC-v1] ================================================================================
+// Codigo tras la vista de planificacion de cortes: ciclo de vida de coladas, calculo de capacidad por
+// linea, asignaciones automaticas y ajustes manuales.
+// ================================================================================================
+
 namespace GPX.Web.Components.VIEWS.Aceria;
 
+/// <summary>
+/// Clase PlanificacionCortes. Codigo tras la vista de planificacion de cortes: ciclo de vida de
+/// coladas, calculo de capacidad por linea, asignaciones automaticas y ajustes manuales.
+/// </summary>
 public partial class PlanificacionCortes : ComponentBase
 {
     [Inject] protected IDialogService DialogService { get; set; } = default!;
@@ -62,6 +71,9 @@ public partial class PlanificacionCortes : ComponentBase
     private readonly HashSet<string> coladasCerradas = new(StringComparer.OrdinalIgnoreCase);
     private readonly List<CorteAsignacionVm> asignacionesManuales = new();
 
+    /// <summary>
+    /// On Initialized.
+    /// </summary>
     protected override void OnInitialized()
     {
         VersionesTundish = ConfiguracionTundishState.VersionTundish;
@@ -74,6 +86,9 @@ public partial class PlanificacionCortes : ComponentBase
         RecalcularPlanCortes();
     }
 
+    /// <summary>
+    /// Cargar Datos Base.
+    /// </summary>
     private void CargarDatosBase()
     {
         ListaTundishReales = Deserialize<List<ListTundishDisponibles>>(VersionesTundish?.ListaTundishReales ?? string.Empty) ?? new();
@@ -131,6 +146,9 @@ public partial class PlanificacionCortes : ComponentBase
         versionHader.AllLongitudes = versionDetail.Select(x => x.Longitud).Distinct().OrderBy(x => x).ToList();
     }
 
+    /// <summary>
+    /// Crear Version Inicial.
+    /// </summary>
     private void CrearVersionInicial()
     {
         VersionesCorte =
@@ -140,21 +158,33 @@ public partial class PlanificacionCortes : ComponentBase
         VersionCorteActiva = "A1";
     }
 
+    /// <summary>
+    /// Seleccionar Tundish.
+    /// </summary>
     protected void SeleccionarTundish(ListTundishDisponibles tundish)
     {
         SelectedTundish = tundish;
     }
 
+    /// <summary>
+    /// On Selected Tundish Value Changed.
+    /// </summary>
     protected void OnSelectedTundishValueChanged(int value)
     {
         SelectedTundish = ListaTundishReales.FirstOrDefault(x => x.NumTundish == value) ?? SelectedTundish;
     }
 
+    /// <summary>
+    /// On Finalizar Tundish Click.
+    /// </summary>
     protected async Task OnFinalizarTundishClick(ListTundishDisponibles tundish)
     {
         await ShowAlertAsync("Tundish", $"Tundish {tundish.NumTundish} marcado para finalizar.", MessageBoxRenderStyle.Info);
     }
 
+    /// <summary>
+    /// On Finalizar Colada Click.
+    /// </summary>
     protected async Task OnFinalizarColadaClick(ColadaTreeVm colada)
     {
         if (!PuedeFinalizarColada(colada))
@@ -177,12 +207,18 @@ public partial class PlanificacionCortes : ComponentBase
         await ShowAlertAsync("Colada", $"Colada {colada.Numero} cerrada.", MessageBoxRenderStyle.Info);
     }
 
+    /// <summary>
+    /// On Version Corte Changed.
+    /// </summary>
     protected void OnVersionCorteChanged(string value)
     {
         VersionCorteActiva = value;
         RecalcularPlanCortes();
     }
 
+    /// <summary>
+    /// On Nueva Version Click.
+    /// </summary>
     protected async Task OnNuevaVersionClick()
     {
         if (VersionesCorte.Count >= 5)
@@ -198,6 +234,9 @@ public partial class PlanificacionCortes : ComponentBase
         RecalcularPlanCortes();
     }
 
+    /// <summary>
+    /// On Eliminar Version Click.
+    /// </summary>
     protected async Task OnEliminarVersionClick()
     {
         if (!PuedeEliminarVersionActiva)
@@ -209,6 +248,9 @@ public partial class PlanificacionCortes : ComponentBase
         await ShowAlertAsync("Versiones", "Version eliminada.", MessageBoxRenderStyle.Info);
     }
 
+    /// <summary>
+    /// On Tundish Activo Changed.
+    /// </summary>
     protected void OnTundishActivoChanged(bool value)
     {
         if (SelectedTundish is null)
@@ -219,6 +261,9 @@ public partial class PlanificacionCortes : ComponentBase
         RecalcularPlanCortes();
     }
 
+    /// <summary>
+    /// On Estado Boca Changed.
+    /// </summary>
     protected void OnEstadoBocaChanged(int numeroBoca, string estatusBoca)
     {
         if (SelectedTundish is null)
@@ -230,6 +275,9 @@ public partial class PlanificacionCortes : ComponentBase
         RecalcularPlanCortes();
     }
 
+    /// <summary>
+    /// On Disminuir Coladas Click.
+    /// </summary>
     protected async Task OnDisminuirColadasClick()
     {
         if (SelectedTundish is null || SelectedTundish.NumColadas <= 0)
@@ -252,6 +300,9 @@ public partial class PlanificacionCortes : ComponentBase
         RecalcularPlanCortes();
     }
 
+    /// <summary>
+    /// On Aumentar Coladas Click.
+    /// </summary>
     protected void OnAumentarColadasClick()
     {
         if (SelectedTundish is null)
@@ -262,6 +313,9 @@ public partial class PlanificacionCortes : ComponentBase
         PopupColadaManualVisible = true;
     }
 
+    /// <summary>
+    /// On Guardar Colada Manual Click.
+    /// </summary>
     protected async Task OnGuardarColadaManualClick()
     {
         if (SelectedTundish is null || ColadaManualEdit.Lineas.Count == 0)
@@ -322,11 +376,17 @@ public partial class PlanificacionCortes : ComponentBase
         PopupColadaManualVisible = false;
     }
 
+    /// <summary>
+    /// On Cancelar Colada Manual Click.
+    /// </summary>
     protected void OnCancelarColadaManualClick()
     {
         PopupColadaManualVisible = false;
     }
 
+    /// <summary>
+    /// On Asignacion Edit Model Saving.
+    /// </summary>
     protected async Task OnAsignacionEditModelSaving(GridEditModelSavingEventArgs e)
     {
         var edit = (CorteAsignacionVm)e.EditModel;
@@ -370,6 +430,9 @@ public partial class PlanificacionCortes : ComponentBase
         ConstruirArbolTundish();
     }
 
+    /// <summary>
+    /// Recalcular Plan Cortes.
+    /// </summary>
     private void RecalcularPlanCortes()
     {
         foreach (var version in VersionesCorte)
@@ -382,6 +445,9 @@ public partial class PlanificacionCortes : ComponentBase
         ConstruirArbolTundish();
     }
 
+    /// <summary>
+    /// Construir Arbol Tundish.
+    /// </summary>
     private void ConstruirArbolTundish()
     {
         ArbolTundish = ListaTundishReales
@@ -397,6 +463,9 @@ public partial class PlanificacionCortes : ComponentBase
             .ToList();
     }
 
+    /// <summary>
+    /// Construir Version Tree.
+    /// </summary>
     private CorteVersionTreeVm ConstruirVersionTree(ListTundishDisponibles tundish, CorteVersionVm version)
     {
         var asignaciones = version.Asignaciones
@@ -418,6 +487,9 @@ public partial class PlanificacionCortes : ComponentBase
         };
     }
 
+    /// <summary>
+    /// Construir Coladas Tree.
+    /// </summary>
     private List<ColadaTreeVm> ConstruirColadasTree(ListTundishDisponibles tundish, string version, List<CorteAsignacionVm> asignaciones)
     {
         var distribucion = ListaPropuestaDistribucionColadas.FirstOrDefault(x => x.NumTundish == tundish.NumTundish);
@@ -498,9 +570,15 @@ public partial class PlanificacionCortes : ComponentBase
         return coladas;
     }
 
+    /// <summary>
+    /// Puede Finalizar Colada.
+    /// </summary>
     private bool PuedeFinalizarColada(ColadaTreeVm colada) =>
         PuedeFinalizarColada(colada.Version, colada.NumTundish, colada.Numero);
 
+    /// <summary>
+    /// Puede Finalizar Colada.
+    /// </summary>
     private bool PuedeFinalizarColada(string version, int numTundish, int numColada)
     {
         if (!string.Equals(version, VersionCorteActiva, StringComparison.OrdinalIgnoreCase))
@@ -518,12 +596,21 @@ public partial class PlanificacionCortes : ComponentBase
         return true;
     }
 
+    /// <summary>
+    /// Esta Colada Cerrada.
+    /// </summary>
     private bool EstaColadaCerrada(string version, int numTundish, int numColada) =>
         coladasCerradas.Contains(GetColadaKey(version, numTundish, numColada));
 
+    /// <summary>
+    /// Get Colada Key.
+    /// </summary>
     private static string GetColadaKey(string version, int numTundish, int numColada) =>
         $"{version}|{numTundish}|{numColada}";
 
+    /// <summary>
+    /// Obtener Numero Coladas Automaticas.
+    /// </summary>
     private int ObtenerNumeroColadasAutomaticas(string version, ListTundishDisponibles tundish)
     {
         var manuales = asignacionesManuales
@@ -535,6 +622,9 @@ public partial class PlanificacionCortes : ComponentBase
         return Math.Max(0, (int)tundish.NumColadas - manuales);
     }
 
+    /// <summary>
+    /// Remover Coladas Manuales Fuera De Rango.
+    /// </summary>
     private void RemoverColadasManualesFueraDeRango(int numTundish, int maxColada)
     {
         asignacionesManuales.RemoveAll(x => x.NumTundish == numTundish && x.NumColada > maxColada);
@@ -542,6 +632,9 @@ public partial class PlanificacionCortes : ComponentBase
             version.Asignaciones.RemoveAll(x => x.EsManual && x.NumTundish == numTundish && x.NumColada > maxColada);
     }
 
+    /// <summary>
+    /// Fusionar Asignaciones Manuales.
+    /// </summary>
     private void FusionarAsignacionesManuales()
     {
         foreach (var version in VersionesCorte)
@@ -551,6 +644,9 @@ public partial class PlanificacionCortes : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Sincronizar Asignacion Manual.
+    /// </summary>
     private void SincronizarAsignacionManual(CorteAsignacionVm edit)
     {
         if (!edit.EsManual)
@@ -574,6 +670,9 @@ public partial class PlanificacionCortes : ComponentBase
         manual.ToneladasAsignadas = edit.ToneladasAsignadas;
     }
 
+    /// <summary>
+    /// Normalizar Tundish.
+    /// </summary>
     private ListTundishDisponibles NormalizarTundish(ListTundishDisponibles tundish)
     {
         if (string.IsNullOrWhiteSpace(tundish.NombreTundish))
@@ -582,6 +681,9 @@ public partial class PlanificacionCortes : ComponentBase
         return tundish;
     }
 
+    /// <summary>
+    /// Crear Resumen Cortes.
+    /// </summary>
     private static string CrearResumenCortes(List<CorteAsignacionVm> asignaciones)
     {
         if (asignaciones.Count == 0)
@@ -600,6 +702,9 @@ public partial class PlanificacionCortes : ComponentBase
             }));
     }
 
+    /// <summary>
+    /// Calcular Capacidad Linea.
+    /// </summary>
     private decimal CalcularCapacidadLinea(
     string tipoBB,
     string statusBoca,
@@ -627,6 +732,9 @@ public partial class PlanificacionCortes : ComponentBase
         return (toneladas * 1000m) / pesoLineal;
     }
 
+    /// <summary>
+    /// Generar Asignaciones.
+    /// </summary>
     private List<CorteAsignacionVm> GenerarAsignaciones(string version)
     {
         var resultado = new List<CorteAsignacionVm>();
@@ -667,6 +775,9 @@ public partial class PlanificacionCortes : ComponentBase
         return resultado;
     }
 
+    /// <summary>
+    /// Ordenar Detalles Para Calidad.
+    /// </summary>
     private List<DetalleVersionVm> OrdenarDetallesParaCalidad(IEnumerable<DetalleVersionVm> detalles, string calidad)
     {
         var esCalidadNormal = EsCalidadNormal(calidad);
@@ -677,6 +788,9 @@ public partial class PlanificacionCortes : ComponentBase
         return query.ToList();
     }
 
+    /// <summary>
+    /// Repartir Detalle En Lineas.
+    /// </summary>
     private void RepartirDetalleEnLineas(
         string version,
         ListTundishDisponibles tundish,
@@ -742,6 +856,9 @@ public partial class PlanificacionCortes : ComponentBase
         pendientes[detalle.IdDetalle] = pendiente;
     }
 
+    /// <summary>
+    /// Rellenar Stock Colada.
+    /// </summary>
     private void RellenarStockColada(
         string version,
         ListTundishDisponibles tundish,
@@ -786,6 +903,9 @@ public partial class PlanificacionCortes : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Crear Colada Manual Edit.
+    /// </summary>
     private ManualColadaVm CrearColadaManualEdit(ListTundishDisponibles tundish, int numeroColada)
     {
         var lineas = ObtenerLineasTundish(tundish)
@@ -813,6 +933,9 @@ public partial class PlanificacionCortes : ComponentBase
         };
     }
 
+    /// <summary>
+    /// Recalcular Asignacion Editada.
+    /// </summary>
     private void RecalcularAsignacionEditada(CorteAsignacionVm edit)
     {
         var tundish = ListaTundishReales.FirstOrDefault(x => x.NumTundish == edit.NumTundish);
@@ -831,6 +954,9 @@ public partial class PlanificacionCortes : ComponentBase
         edit.BarrasFabricadas = Math.Max(0, edit.BarrasFabricadas);
     }
 
+    /// <summary>
+    /// On Manual Linea Changed.
+    /// </summary>
     protected void OnManualLineaChanged(ManualColadaLineaVm linea)
     {
         linea.Longitud = Math.Max(0, linea.Longitud);
@@ -839,6 +965,9 @@ public partial class PlanificacionCortes : ComponentBase
         linea.Toneladas = Math.Max(0, linea.Toneladas);
     }
 
+    /// <summary>
+    /// Puede Asignar Corte.
+    /// </summary>
     private static bool PuedeAsignarCorte(LineaTundishVm linea, int longitud)
     {
         if (!linea.Abierta || longitud <= 0)
@@ -847,6 +976,9 @@ public partial class PlanificacionCortes : ComponentBase
         return linea.CapacidadRestanteMm >= longitud || linea.CapacidadRestanteMm >= longitud * 0.5m;
     }
 
+    /// <summary>
+    /// Calcular Cortes Posibles.
+    /// </summary>
     private static int CalcularCortesPosibles(decimal capacidadRestanteMm, int longitud)
     {
         if (longitud <= 0 || capacidadRestanteMm <= 0)
@@ -860,6 +992,9 @@ public partial class PlanificacionCortes : ComponentBase
         return cortes;
     }
 
+    /// <summary>
+    /// Obtener Lineas Tundish.
+    /// </summary>
     private List<LineaTundishVm> ObtenerLineasTundish(ListTundishDisponibles tundish) =>
     [
         CrearLineaTundish(tundish, 1, tundish.tsCierre1, tundish.StatusBoca1),
@@ -870,6 +1005,9 @@ public partial class PlanificacionCortes : ComponentBase
         CrearLineaTundish(tundish, 6, tundish.tsCierre6, tundish.StatusBoca6)
     ];
 
+    /// <summary>
+    /// Crear Linea Tundish.
+    /// </summary>
     private LineaTundishVm CrearLineaTundish(ListTundishDisponibles tundish, int numero, string tipoSemi, string estado)
     {
         var tipo = tipoSemi?.Trim().ToUpperInvariant() ?? string.Empty;
@@ -881,6 +1019,9 @@ public partial class PlanificacionCortes : ComponentBase
         };
     }
 
+    /// <summary>
+    /// Crear Linea Cerrada.
+    /// </summary>
     private static CorteAsignacionVm CrearLineaCerrada(string version, int numTundish, int numColada, string calidad, LineaTundishVm linea) => new()
     {
         Version = version,
@@ -897,12 +1038,18 @@ public partial class PlanificacionCortes : ComponentBase
         ToneladasAsignadas = 0
     };
 
+    /// <summary>
+    /// Es Calidad Normal.
+    /// </summary>
     private static bool EsCalidadNormal(string calidad)
     {
         var value = calidad?.Trim().ToUpperInvariant().Replace("-", string.Empty) ?? string.Empty;
         return value == "S275H";
     }
 
+    /// <summary>
+    /// Recalcular Resumen Y Comparativa.
+    /// </summary>
     private void RecalcularResumenYComparativa()
     {
         var asignaciones = AsignacionesActuales;
@@ -937,6 +1084,9 @@ public partial class PlanificacionCortes : ComponentBase
         ComparativaVersiones = VersionesCorte.Select(CalcularComparativa).ToList();
     }
 
+    /// <summary>
+    /// Calcular Comparativa.
+    /// </summary>
     private ComparativaVersionVm CalcularComparativa(CorteVersionVm version)
     {
         var resumen = CrearResumen(version.Asignaciones);
@@ -970,6 +1120,9 @@ public partial class PlanificacionCortes : ComponentBase
         };
     }
 
+    /// <summary>
+    /// Crear Resumen.
+    /// </summary>
     private List<CorteResumenVm> CrearResumen(List<CorteAsignacionVm> asignaciones)
     {
         return versionDetail.Select(detalle =>
@@ -995,6 +1148,9 @@ public partial class PlanificacionCortes : ComponentBase
         }).ToList();
     }
 
+    /// <summary>
+    /// Obtener Detalle Origen Resumen.
+    /// </summary>
     private List<CorteResumenDetalleOrigenVm> ObtenerDetalleOrigenResumen(DetalleVersionVm detalle)
     {
         return ListaNecesidadCompleta
@@ -1021,6 +1177,9 @@ public partial class PlanificacionCortes : ComponentBase
             .ToList();
     }
 
+    /// <summary>
+    /// Promedio Cobertura.
+    /// </summary>
     private static decimal PromedioCobertura(IEnumerable<IGrouping<string, CorteResumenVm>> grupos, decimal peso)
     {
         var lista = grupos.ToList();
@@ -1038,6 +1197,9 @@ public partial class PlanificacionCortes : ComponentBase
         });
     }
 
+    /// <summary>
+    /// Calcular Score Cambios.
+    /// </summary>
     private static decimal CalcularScoreCambios(List<CorteAsignacionVm> asignaciones)
     {
         var grupos = asignaciones.GroupBy(x => x.NumTundish).ToList();
@@ -1064,6 +1226,9 @@ public partial class PlanificacionCortes : ComponentBase
         });
     }
 
+    /// <summary>
+    /// Get Boca.
+    /// </summary>
     protected BocaView GetBoca(int numeroBoca)
     {
         if (SelectedTundish is null)
@@ -1081,6 +1246,9 @@ public partial class PlanificacionCortes : ComponentBase
         };
     }
 
+    /// <summary>
+    /// Get Tipo Css.
+    /// </summary>
     protected static string GetTipoCss(string? tipo) => tipo?.Trim().ToUpperInvariant() switch
     {
         "BB1" => "bb1",
@@ -1089,6 +1257,9 @@ public partial class PlanificacionCortes : ComponentBase
         _ => string.Empty
     };
 
+    /// <summary>
+    /// Get Estado Color.
+    /// </summary>
     protected static string GetEstadoColor(string? estado) => estado?.Trim().ToUpperInvariant() switch
     {
         "ABIERTA" => "#31b404",
@@ -1097,6 +1268,9 @@ public partial class PlanificacionCortes : ComponentBase
         _ => "#e5e7eb"
     };
 
+    /// <summary>
+    /// Get Calidad Class.
+    /// </summary>
     protected static string GetCalidadClass(string calidad)
     {
         return calidad?.Trim().ToUpperInvariant() switch
@@ -1113,6 +1287,9 @@ public partial class PlanificacionCortes : ComponentBase
         };
     }
 
+    /// <summary>
+    /// Get Tipo Badge Class.
+    /// </summary>
     protected static string GetTipoBadgeClass(string tipoSemi) => tipoSemi?.Trim().ToUpperInvariant() switch
     {
         "BB1" => "badge-bb1",
@@ -1121,11 +1298,17 @@ public partial class PlanificacionCortes : ComponentBase
         _ => "badge-default"
     };
 
+    /// <summary>
+    /// Get Tipo Display.
+    /// </summary>
     protected static string GetTipoDisplay(CorteAsignacionVm row) =>
         string.Equals(row.TipoSemi, "Cerrada", StringComparison.OrdinalIgnoreCase)
             ? "Cerrada"
             : row.TipoSemi;
 
+    /// <summary>
+    /// On Resumen Grid Customize Element.
+    /// </summary>
     protected void OnResumenGridCustomizeElement(GridCustomizeElementEventArgs e)
     {
         if (e.ElementType != GridElementType.DataCell)
@@ -1146,6 +1329,9 @@ public partial class PlanificacionCortes : ComponentBase
             e.CssClass = $"{e.CssClass} badge-cell {cssClass}".Trim();
     }
 
+    /// <summary>
+    /// On Asignacion Grid Customize Element.
+    /// </summary>
     protected void OnAsignacionGridCustomizeElement(GridCustomizeElementEventArgs e)
     {
         if (e.ElementType != GridElementType.DataCell)
@@ -1166,6 +1352,9 @@ public partial class PlanificacionCortes : ComponentBase
             e.CssClass = $"{e.CssClass} badge-cell {cssClass}".Trim();
     }
 
+    /// <summary>
+    /// Recalcular Capacidad Tundish.
+    /// </summary>
     private void RecalcularCapacidadTundish(ListTundishDisponibles tundish)
     {
         var config = ListaConfiguracionAceria.FirstOrDefault();
@@ -1194,6 +1383,9 @@ public partial class PlanificacionCortes : ComponentBase
         tundish.NumColadas = tundish.TundishActivo && tundish.HorasVida > 0 ? Math.Max(0, Math.Ceiling((tundish.HorasVida * 60) / minXColada) - 1) : 0;
     }
 
+    /// <summary>
+    /// Configurar Boca.
+    /// </summary>
     private static void ConfigurarBoca(ListTundishDisponibles tundish, string tipo, string estatusBoca, int numeroBoca)
     {
         var anterior = ObtenerStatusBocaActual(tundish, numeroBoca);
@@ -1216,6 +1408,9 @@ public partial class PlanificacionCortes : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Ajustar Total.
+    /// </summary>
     private static void AjustarTotal(ListTundishDisponibles tundish, string tipo, int delta)
     {
         switch (tipo)
@@ -1226,6 +1421,9 @@ public partial class PlanificacionCortes : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Obtener Status Boca Actual.
+    /// </summary>
     private static string ObtenerStatusBocaActual(ListTundishDisponibles tundish, int numeroBoca) => numeroBoca switch
     {
         1 => tundish.StatusBoca1,
@@ -1237,6 +1435,9 @@ public partial class PlanificacionCortes : ComponentBase
         _ => string.Empty
     };
 
+    /// <summary>
+    /// Asignar Status Boca.
+    /// </summary>
     private static void AsignarStatusBoca(ListTundishDisponibles tundish, int numeroBoca, string status)
     {
         switch (numeroBoca)
@@ -1250,6 +1451,9 @@ public partial class PlanificacionCortes : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Obtener Segmentos Calidad.
+    /// </summary>
     private IEnumerable<SegmentoCalidadVm> ObtenerSegmentosCalidad(ListaPropuestaDistribucion fila)
     {
         if (fila.S275H > 0) yield return new SegmentoCalidadVm("S275-H", fila.S275H);
@@ -1260,6 +1464,9 @@ public partial class PlanificacionCortes : ComponentBase
         if (fila.S275TI > 0) yield return new SegmentoCalidadVm("S275-TI", fila.S275TI);
     }
 
+    /// <summary>
+    /// Obtener Secuencia Coladas.
+    /// </summary>
     private IEnumerable<string> ObtenerSecuenciaColadas(ListaPropuestaDistribucion fila)
     {
         foreach (var segmento in ObtenerSegmentosCalidad(fila))
@@ -1269,6 +1476,9 @@ public partial class PlanificacionCortes : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Clone Asignacion.
+    /// </summary>
     private static CorteAsignacionVm CloneAsignacion(CorteAsignacionVm source) => new()
     {
         Version = source.Version,
@@ -1289,6 +1499,9 @@ public partial class PlanificacionCortes : ComponentBase
         EsManual = source.EsManual
     };
 
+    /// <summary>
+    /// Tundish Tiene Tipo.
+    /// </summary>
     private static bool TundishTieneTipo(ListTundishDisponibles tundish, string tipo) => tipo switch
     {
         "BB1" => tundish.tstotalBB1 > 0 || tundish.TnXColadaBB1 > 0,
@@ -1297,6 +1510,9 @@ public partial class PlanificacionCortes : ComponentBase
         _ => false
     };
 
+    /// <summary>
+    /// Get Tn X Colada.
+    /// </summary>
     private static decimal GetTnXColada(ListTundishDisponibles tundish, string tipo) => tipo switch
     {
         "BB1" => tundish.TnXColadaBB1,
@@ -1305,12 +1521,18 @@ public partial class PlanificacionCortes : ComponentBase
         _ => 0
     };
 
+    /// <summary>
+    /// Get Tn Por Barra.
+    /// </summary>
     private decimal GetTnPorBarra(string tipoSemi, int longitud)
     {
         var pesoLineal = GetPesoLineal(tipoSemi);
         return Math.Round(((longitud / 1000m) * pesoLineal) / 1000m, 4);
     }
 
+    /// <summary>
+    /// Get Peso Lineal.
+    /// </summary>
     private decimal GetPesoLineal(string tipoSemi)
     {
         var config = ListaConfiguracionAceria.FirstOrDefault();
@@ -1323,10 +1545,19 @@ public partial class PlanificacionCortes : ComponentBase
         };
     }
 
+    /// <summary>
+    /// Is Tipo Semi Valido.
+    /// </summary>
     private bool IsTipoSemiValido(BeamBlankNecesidad item) => tipoSemiOrden.Contains(item.MatSemi?.Trim() ?? string.Empty);
 
+    /// <summary>
+    /// Get Resumen Id.
+    /// </summary>
     private static string GetResumenId(DetalleVersionVm detalle) => $"{detalle.TipoSemi}|{detalle.Calidad}|{detalle.Longitud}";
 
+    /// <summary>
+    /// Limpieza.
+    /// </summary>
     protected void Limpieza()
     {
         VersionesTundish = new ConfiguracionTundishControl();
@@ -1342,6 +1573,9 @@ public partial class PlanificacionCortes : ComponentBase
         SelectedTundish = null;
     }
 
+    /// <summary>
+    /// Show Alert (operacion asincrona).
+    /// </summary>
     private Task ShowAlertAsync(string title, string text, MessageBoxRenderStyle renderStyle)
     {
         return DialogService.AlertAsync(new MessageBoxOptions
@@ -1355,6 +1589,10 @@ public partial class PlanificacionCortes : ComponentBase
 
     private static T? Deserialize<T>(string json) => string.IsNullOrWhiteSpace(json) ? default : JsonSerializer.Deserialize<T>(json, JsonOptions);
 
+    /// <summary>
+    /// Clase CorteVersionVm. Codigo tras la vista de planificacion de cortes: ciclo de vida de coladas,
+    /// calculo de capacidad por linea, asignaciones automaticas y ajustes manuales.
+    /// </summary>
     protected sealed class CorteVersionVm
     {
         public string Clave { get; set; } = string.Empty;
@@ -1363,6 +1601,10 @@ public partial class PlanificacionCortes : ComponentBase
         public List<CorteAsignacionVm> Asignaciones { get; set; } = new();
     }
 
+    /// <summary>
+    /// Clase CorteAsignacionVm. Codigo tras la vista de planificacion de cortes: ciclo de vida de coladas,
+    /// calculo de capacidad por linea, asignaciones automaticas y ajustes manuales.
+    /// </summary>
     protected sealed class CorteAsignacionVm
     {
         public string Version { get; set; } = string.Empty;
@@ -1383,6 +1625,10 @@ public partial class PlanificacionCortes : ComponentBase
         public bool EsManual { get; set; }
     }
 
+    /// <summary>
+    /// Clase CorteResumenVm. Codigo tras la vista de planificacion de cortes: ciclo de vida de coladas,
+    /// calculo de capacidad por linea, asignaciones automaticas y ajustes manuales.
+    /// </summary>
     protected sealed class CorteResumenVm
     {
         public string Id { get; set; } = string.Empty;
@@ -1399,6 +1645,10 @@ public partial class PlanificacionCortes : ComponentBase
         public List<CorteResumenDetalleOrigenVm> DetallesOrigen { get; set; } = new();
     }
 
+    /// <summary>
+    /// Clase CorteResumenDetalleOrigenVm. Codigo tras la vista de planificacion de cortes: ciclo de vida de
+    /// coladas, calculo de capacidad por linea, asignaciones automaticas y ajustes manuales.
+    /// </summary>
     protected sealed class CorteResumenDetalleOrigenVm
     {
         public string Id { get; set; } = string.Empty;
@@ -1408,6 +1658,10 @@ public partial class PlanificacionCortes : ComponentBase
         public DateTime FechaNecesidad { get; set; }
     }
 
+    /// <summary>
+    /// Clase ComparativaVersionVm. Codigo tras la vista de planificacion de cortes: ciclo de vida de
+    /// coladas, calculo de capacidad por linea, asignaciones automaticas y ajustes manuales.
+    /// </summary>
     protected sealed class ComparativaVersionVm
     {
         public string Version { get; set; } = string.Empty;
@@ -1421,12 +1675,20 @@ public partial class PlanificacionCortes : ComponentBase
         public decimal ScoreTotal { get; set; }
     }
 
+    /// <summary>
+    /// Clase TundishTreeVm. Codigo tras la vista de planificacion de cortes: ciclo de vida de coladas,
+    /// calculo de capacidad por linea, asignaciones automaticas y ajustes manuales.
+    /// </summary>
     protected sealed class TundishTreeVm
     {
         public ListTundishDisponibles Tundish { get; set; } = new();
         public List<CorteVersionTreeVm> Versiones { get; set; } = new();
     }
 
+    /// <summary>
+    /// Clase CorteVersionTreeVm. Codigo tras la vista de planificacion de cortes: ciclo de vida de coladas,
+    /// calculo de capacidad por linea, asignaciones automaticas y ajustes manuales.
+    /// </summary>
     protected sealed class CorteVersionTreeVm
     {
         public string Version { get; set; } = string.Empty;
@@ -1439,6 +1701,10 @@ public partial class PlanificacionCortes : ComponentBase
         public List<ColadaTreeVm> Coladas { get; set; } = new();
     }
 
+    /// <summary>
+    /// Clase ColadaTreeVm. Codigo tras la vista de planificacion de cortes: ciclo de vida de coladas,
+    /// calculo de capacidad por linea, asignaciones automaticas y ajustes manuales.
+    /// </summary>
     protected sealed class ColadaTreeVm
     {
         public string Version { get; set; } = string.Empty;
@@ -1454,6 +1720,10 @@ public partial class PlanificacionCortes : ComponentBase
         public List<CorteAsignacionVm> Perfiles { get; set; } = new();
     }
 
+    /// <summary>
+    /// Clase ManualColadaVm. Codigo tras la vista de planificacion de cortes: ciclo de vida de coladas,
+    /// calculo de capacidad por linea, asignaciones automaticas y ajustes manuales.
+    /// </summary>
     protected sealed class ManualColadaVm
     {
         public string Version { get; set; } = string.Empty;
@@ -1464,6 +1734,10 @@ public partial class PlanificacionCortes : ComponentBase
         public List<ManualColadaLineaVm> Lineas { get; set; } = new();
     }
 
+    /// <summary>
+    /// Clase ManualColadaLineaVm. Codigo tras la vista de planificacion de cortes: ciclo de vida de
+    /// coladas, calculo de capacidad por linea, asignaciones automaticas y ajustes manuales.
+    /// </summary>
     protected sealed class ManualColadaLineaVm
     {
         public int Linea { get; set; }

@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Ruta /gestion/perfiles. Alta, edicion y listado de perfiles funcionales (AppProfile).
+   ========================================================================================== *@
 @page "/gestion/perfiles"
 @attribute [Authorize(Policy = "Module:ADMIN_PROFILES")]
 
@@ -91,6 +94,9 @@
     IReadOnlyList<GestionProfileListItem> Profiles = [];
     GestionProfileEditor ProfileEditor = new();
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         await ReloadAsync();
     }

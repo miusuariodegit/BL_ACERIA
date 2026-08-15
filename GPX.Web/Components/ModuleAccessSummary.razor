@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Resumen de los modulos accesibles para el usuario actual.
+   ========================================================================================== *@
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ModuleAccessService ModuleAccessService
@@ -49,6 +52,9 @@
 
     [Parameter] public string ModuleCode { get; set; } = string.Empty;
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
     }

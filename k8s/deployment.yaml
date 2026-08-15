@@ -1,3 +1,9 @@
+# [GPX-DOC-v1] ================================================================================
+# Manifiesto de Kubernetes para GPB-Acería: despliega la aplicacion GPX.Web sobre el cluster EKS
+# aprovisionado por Terraform (ver infraestructura/) y la expone mediante un LoadBalancer.
+# ================================================================================================
+
+# --- Deployment: pods que ejecutan la imagen de la aplicacion publicada en Amazon ECR ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,7 +11,7 @@ metadata:
   labels:
     app: gpbaceria
 spec:
-  replicas: 2
+  replicas: 2  # dos replicas para tolerancia a fallos y despliegues sin downtime
   selector:
     matchLabels:
       app: gpbaceria
@@ -16,10 +22,12 @@ spec:
     spec:
       containers:
       - name: web-server
+        # Imagen construida y publicada por el pipeline deployversion.yml (tag = SHA del commit)
         image: 295934382080.dkr.ecr.us-east-1.amazonaws.com/gpbaceria:a8974b9c5e0317ff0f5173c5e567ef9b0c06cf1b
         ports:
-        - containerPort: 8082
+        - containerPort: 8082  # debe coincidir con ASPNETCORE_URLS/EXPOSE del Dockerfile
 ---
+# --- Service: balanceador de carga que expone el Deployment hacia el exterior del cluster ---
 apiVersion: v1
 kind: Service
 metadata:

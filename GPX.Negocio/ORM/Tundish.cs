@@ -1,11 +1,20 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// [GPX-DOC-v1] ================================================================================
+// Entidad tundish: sociedad, necesidad por tipo de BB, si esta activo, tipo estandar y hora real de
+// cierre de cada boca.
+// ================================================================================================
+
 namespace GPX.Negocio.ORM
 {
+    /// <summary>
+    /// Clase Tundish. Entidad tundish: sociedad, necesidad por tipo de BB, si esta activo, tipo estandar y
+    /// hora real de cierre de cada boca.
+    /// </summary>
     public class Tundish
     {
         public int tuID { get; set; }

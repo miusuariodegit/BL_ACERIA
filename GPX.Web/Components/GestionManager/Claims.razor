@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Ruta /gestion/claims. Consulta de claims de permisos sincronizados.
+   ========================================================================================== *@
 @page "/gestion/claims"
 @attribute [Authorize(Policy = "Module:ADMIN_CLAIMS")]
 
@@ -92,6 +95,9 @@
     bool IsLoading = true;
     GestionClaimsSummary? Summary;
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         await LoadAsync();
     }

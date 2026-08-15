@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using GPX.Negocio.ORM;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -8,13 +8,25 @@ using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 
+// [GPX-DOC-v1] ================================================================================
+// Servicio de negocio del calendario de fusion de horno: consulta, actualizacion de un dia u hora
+// concreta, y limpieza de la programacion.
+// ================================================================================================
+
 namespace GPX.Negocio.Aceria
 {
+    /// <summary>
+    /// Clase CalendarioFusionHornoService. Servicio de negocio del calendario de fusion de horno: consulta,
+    /// actualizacion de un dia u hora concreta, y limpieza de la programacion.
+    /// </summary>
     public  class CalendarioFusionHornoService
     {
 
         private readonly string cnn;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase CalendarioFusionHornoService.
+        /// </summary>
         public CalendarioFusionHornoService(IConfiguration configuration)
         {
             cnn = configuration.GetConnectionString("DefaultConnection")
@@ -23,6 +35,9 @@ namespace GPX.Negocio.Aceria
 
 
 
+        /// <summary>
+        /// Obtiene el calendario de fusion de horno hasta la fecha indicada.
+        /// </summary>
         public async Task<List<CalendarioFusionHorno>> DameCalendarioFusionHastaAsync(DateTime fechaFin)
         {
             try
@@ -46,6 +61,9 @@ namespace GPX.Negocio.Aceria
             }
         }
 
+        /// <summary>
+        /// Actualiza el tipo de semielaborado programado para un dia completo del calendario de fusion.
+        /// </summary>
         public async Task<Boolean> ActualizaSoloDiaFusionAsync(DateTime diaCalendario, string tipoBB)
         {
             try
@@ -69,6 +87,9 @@ namespace GPX.Negocio.Aceria
         }
 
 
+        /// <summary>
+        /// Actualiza el tipo de semielaborado programado para una hora concreta de un dia del calendario.
+        /// </summary>
         public async Task<Boolean> ActualizaSoloDiaHoraFusionAsync(DateTime diaCalendario, int horaCalendario, string tipoBB)
         {
             try
@@ -93,6 +114,9 @@ namespace GPX.Negocio.Aceria
         }
 
 
+        /// <summary>
+        /// Limpia toda la programacion de fusion de un dia del calendario.
+        /// </summary>
         public async Task<Boolean> LimpiarDiaCompletoFusionAsync(DateTime diaCalendario)
         {
             try
@@ -116,6 +140,9 @@ namespace GPX.Negocio.Aceria
 
 
 
+        /// <summary>
+        /// Limpia la programacion de fusion a partir de una hora de inicio dada en un dia del calendario.
+        /// </summary>
         public async Task<Boolean> LimpiarApartiDeHoraInicioFusionAsync(DateTime diaCalendario)
         {
             try
@@ -137,6 +164,9 @@ namespace GPX.Negocio.Aceria
             }
         }
 
+        /// <summary>
+        /// Actualiza de una sola vez todos los valores de un registro completo del calendario de fusion.
+        /// </summary>
         public async Task<Boolean> ActualizaDiaCompletoFusionAsync(CalendarioFusionHorno values)
         {
             try

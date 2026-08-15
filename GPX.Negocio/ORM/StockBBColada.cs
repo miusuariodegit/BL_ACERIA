@@ -1,11 +1,20 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// [GPX-DOC-v1] ================================================================================
+// Stock de beam blank por colada: sociedad, tipo, calidad, longitud, colada, stock en
+// unidades/toneladas y ubicacion.
+// ================================================================================================
+
 namespace GPX.Negocio.ORM
 {
+    /// <summary>
+    /// Clase StockBBColada. Stock de beam blank por colada: sociedad, tipo, calidad, longitud, colada,
+    /// stock en unidades/toneladas y ubicacion.
+    /// </summary>
     public  class StockBBColada
     {
 

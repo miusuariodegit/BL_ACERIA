@@ -1,3 +1,6 @@
+@* [GPX-DOC-v1] ======================================================================
+   Ruta /gestion/roles. Alta, edicion y listado de roles.
+   ========================================================================================== *@
 @page "/gestion/roles"
 @attribute [Authorize(Policy = "Module:ADMIN_ROLES")]
 
@@ -90,6 +93,9 @@
     IReadOnlyList<GestionRoleListItem> RoleItems = [];
     GestionRoleEditor RoleEditor = new();
 
+    /// <summary>
+    /// On Initialized (operacion asincrona).
+    /// </summary>
     protected override async Task OnInitializedAsync() {
         await ReloadAsync();
     }
